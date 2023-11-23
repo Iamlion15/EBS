@@ -5,6 +5,7 @@ import HeaderComponent from "../../components/Header/Header"
 import Dashboard from "./dashboard";
 import Logout from "@/helpers/logout";
 import MyRequests from "./myRequests";
+import Feedback from "./feedBacks";
 
 const Index = () => {
     const [page, setPage] = useState("Dashboard")
@@ -28,7 +29,9 @@ const Index = () => {
                         {page === 'Review Requests' && (
                             <MyRequests />
                         )}
-
+                        {page === 'Feedback' && (
+                            <Feedback />
+                        )}
                     </div>
                 </div>
             </div>

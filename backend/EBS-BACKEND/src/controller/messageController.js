@@ -39,7 +39,7 @@ exports.sendMessage = async (req, res) => {
 
             const newChatMessage = new ChatModel({
                 participants:[senderId,recipientId],
-                item:req.body.itemId,
+                itemrequest:req.body.itemId,
                 message: [newMessage],
             });
 
@@ -104,3 +104,45 @@ exports.getMessagesBetweenUsers = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+
+exports.getMessages=async(req,res)=>{
+    try {
+        const senderId = req.user.id;
+    
+        // Find the chat where the sender is involved
+        const chat = await ChatModel.find({
+            participants: senderId,
+        })
+        .populate({
+            path: 'participants',
+            model: 'user',
+        })
+        .populate({
+            path: 'itemrequest',
+            model: 'itemrequest',
+            populate: [
+                {
+                    path: 'owner',
+                    model: 'user',
+                },
+                {
+                    path: 'item',
+                    model: 'item',
+                },
+            ],
+        })
+        
+        .exec();
+    
+        if (!chat) {
+            return res.status(404).json({ error: "No message found" });
+        }
+    
+    
+        res.status(200).json(chat);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}    

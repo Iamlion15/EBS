@@ -19,7 +19,12 @@ const SidebarItems = {
                 title: "My Requests",
                 icon: <i className="bi bi-archive-fill mx-2"></i>,
                 link: ""
-            }
+            },
+            {
+                title: "Feedback",
+                icon: <i class="bi bi-chat-left-fill mx-2"></i>,
+                link: ""
+            },
         ]
     },
     EBS: {

@@ -16,13 +16,10 @@ import ApproveItemModal from "@/components/Modals/ApproveItemModal";
 
 const MyRequests = () => {
     const [data, setData] = useState([])
-    const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [deleteId, setDeleteId] = useState('')
     const [messageModal, setMessageModal] = useState(false)
     const [viewApp, setViewApp] = useState(false)
     const [viewItemApprove, setViewItemApprove] = useState(false)
     const [details, setDetails] = useState({})
-    const [receiver,setReciever]=useState('')
     const [approveData, setApproveData] = useState({
         id: "",
         ItemName: "",
@@ -38,9 +35,6 @@ const MyRequests = () => {
         ItemName:""
     })
     const toastId = useRef(null)
-    const toggleModal = () => {
-        setModalIsOpen(!modalIsOpen);
-    };
     const toggleApproveItemModal = () => {
         setViewItemApprove(!viewItemApprove)
     }
@@ -56,15 +50,17 @@ const MyRequests = () => {
         }
         try {
             const response = await axios.get("http://localhost:4000/api/item/getall", config)
-            setData(response.data)
+            const ebsdata=[];
+            for(let i=0;i<response.data.length;i++){
+                if(response.data[i].EBS_Approval.approved===false){
+                    rabdata.push(response.data[i])
+                }
+            }
+            setData(rebsdata)
         } catch (error) {
             console.log(error)
         }
     }, [viewItemApprove, messageModal])
-    const switchView = (detail) => {
-        setDetails(detail)
-        setViewApp(true)
-    }
     const showMessageModal = (info) => {
         console.log(info);
         setMessageData({
@@ -72,7 +68,7 @@ const MyRequests = () => {
             firstname:info.owner.firstname,
             lastname:info.owner.lastname,
             ItemName:info.item.ItemName,
-            itemId:info.item._id
+            itemId:info._id
         })
         setMessageModal(true)
     }
@@ -85,38 +81,32 @@ const MyRequests = () => {
         })
         setViewItemApprove(true)
     }
-    const updateHandler = async (e) => {
+    const confirmHandler = async (e) => {
         e.preventDefault();
+        const confirmData={
+            id:approveData.id,
+            reviewer:"EBS"
+        }
         toastId.current = toast.info("Loading............", {
             position: toast.POSITION.TOP_LEFT,
             autoClose: false
         })
-        const formData = new FormData();
-        formData.append("id", updateData.id);
-        formData.append("ItemName", updateData.ItemName);
-        formData.append("quantity", updateData.quantity);
-        formData.append("whenNeeded", updateData.whenNeeded);
-        formData.append("itemType", updateData.itemType);
-        formData.append("purpose", updateData.purpose);
-        formData.append("fileLocation", updateData.fileLocation)
         const config = {
             headers: {
-                'Content-Type': "multipart/form-data",
+                'Content-Type': "application/json",
                 'Authorization': JSON.parse(localStorage.getItem("token"))
             }
         }
         try {
-            const response = await axios.post("http://localhost:4000/api/item/update", formData, config)
+            const response = await axios.post("http://localhost:4000/api/item/approve",confirmData, config)
             toast.update(toastId.current, { render: "Successfully sent data", type: toast.TYPE.SUCCESS, autoClose: 2000 })
-            toggleUpdateItemModal()
+            toggleApproveItemModal()
 
         } catch (error) {
             console.log(error)
             toast.update(toastId.current, { render: "Failure", type: toast.TYPE.ERROR, autoClose: 2000 })
         }
     }
-    
-
     return (
         <>
             {!viewApp && (
@@ -195,7 +185,7 @@ const MyRequests = () => {
                             toggleModal={toggleApproveItemModal}
                             data={approveData}
                             setData={setApproveData}
-                            updateHandler={updateHandler}
+                            confirmHandler={confirmHandler}
 
                         />}
                     </div>

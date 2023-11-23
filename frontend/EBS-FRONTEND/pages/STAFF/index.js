@@ -6,6 +6,7 @@ import RequestItem from "./requestItem"
 import MyRequests from "./myRequests";
 import Dashboard from "./dashboard";
 import Logout from "@/helpers/logout";
+import Feedback from "./feedBacks";
 
 const Index = () => {
     const [page, setPage] = useState("Dashboard")
@@ -15,10 +16,10 @@ const Index = () => {
     }, [page])
     return (
         <>
-            <div className="row" style={{backgroundColor:"#f5f5f5",height:"100vh"}}>
-                <Sidebar page={page} setPage={setPage} logout={Logout}/>
+            <div className="row" style={{ backgroundColor: "#f5f5f5", height: "100vh" }}>
+                <Sidebar page={page} setPage={setPage} logout={Logout} />
                 <div className="col-9">
-                    <HeaderComponent page={page} logout={Logout}/>
+                    <HeaderComponent page={page} logout={Logout} />
                     <div className="mt-4 p-4">
                         {page === "Dashboard" && (
                             <Dashboard />
@@ -29,7 +30,9 @@ const Index = () => {
                         {page === 'My Requests' && (
                             <MyRequests />
                         )}
-
+                        {page === 'Feedback' && (
+                            <Feedback />
+                        )}
                     </div>
                 </div>
             </div>

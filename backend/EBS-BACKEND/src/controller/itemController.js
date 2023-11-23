@@ -56,7 +56,7 @@ exports.updateItem = async (req, res) => {
         item.purpose = req.body.purpose;
         if (req.file) {
             fileLocation = path.resolve(req.file.path)
-            item.fileLocation=fileLocation;
+            item.fileLocation = fileLocation;
         }
         const updateItem = await item.save();
         res.status(200).json({ message: "Successfully updated user" });
@@ -103,8 +103,8 @@ exports.ReviewRequest = async (req, res) => {
     try {
         const reviewer = req.body.reviewer;
         const item = await itemRequestModel.findOne({ _id: req.body.id });
-        if (!document) {
-            return res.status(404).json({ message: 'document not found' });
+        if (!item) {
+            return res.status(404).json({ message: 'item not found' });
         }
         const currentDate = new Date();
         const year = currentDate.getFullYear();
@@ -118,11 +118,11 @@ exports.ReviewRequest = async (req, res) => {
         else {
             if (reviewer === "EBS") {
                 item.EBS_Approval.approved = true
-            item.EBS_Approval.timeOfApproval = formattedDate
+                item.EBS_Approval.timeOfApproval = formattedDate
             }
         }
         await item.save();
-        res.status(200).json({ message: "Successfully updated user" });
+        res.status(200).json({ message: "Successfully reviewed item" });
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: 'Server error' });
