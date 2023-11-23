@@ -1,0 +1,10 @@
+<div className='d-flex flex-column align-items-center justify-content-center'>
+    <Image
+        src="/images/gov_logo.png"
+        width={50}
+        height={50}
+    />
+    <p className="text-primary text"
+        style={{ fontFamily: 'Arial, sans-serif' }}
+    ><strong>RICMS SYSTEM</strong></p>
+</div>
