@@ -51,12 +51,13 @@ const MyRequests = () => {
         try {
             const response = await axios.get("http://localhost:4000/api/item/getall", config)
             const ebsdata=[];
+            console.log(response.data);
             for(let i=0;i<response.data.length;i++){
                 if(response.data[i].EBS_Approval.approved===false){
-                    rabdata.push(response.data[i])
+                    ebsdata.push(response.data[i])
                 }
             }
-            setData(rebsdata)
+            setData(ebsdata)
         } catch (error) {
             console.log(error)
         }

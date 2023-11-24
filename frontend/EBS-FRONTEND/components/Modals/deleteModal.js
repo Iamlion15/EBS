@@ -24,7 +24,7 @@ const DeleteModal = ({ modalIsOpen, toggleModal, id, ToastContainer }) => {
                     'Authorization': JSON.parse(localStorage.getItem("token"))
                 }
             }
-            const response = await axios.delete(`http://localhost:5000/api/document/delete/${id}`, config)
+            const response = await axios.delete(`http://localhost:4000/api/item/delete/${id}`, config)
             toast.update(toastId.current, { render: "Successfully deleted data", type: toast.TYPE.SUCCESS, autoClose: 2000 })
             toggleModal()
         } catch (error) {

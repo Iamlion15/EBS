@@ -59,21 +59,38 @@ const MessageModal = ({ modalIsOpen, toggleModal, data }) => {
         try {
             const response = await axios.post("http://localhost:4000/api/message/getchat", msgInformation, config)
             setChats(response.data)
-            if(response.data==="")
-            {
+            if (response.data === "") {
                 setIsNew(false)
             }
-            console.log(response.data)
+            if (response.data && response.data.chat && response.data.chat.messages.length > 0) {
+                const userWhoLoggedIn=JSON.parse(localStorage.getItem('loggedInUser'))._id
+                const lastMessage = response.data.chat.messages[response.data.chat.messages.length - 1];
+                // Check if the last message is not marked as read
+                if (!lastMessage.read.isRead && lastMessage.sender.userId !== userWhoLoggedIn) {
+                    console.log("here");
+                    const markReadConfig = {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': JSON.parse(localStorage.getItem('token')),
+                        },
+                    };
+                    try {
+                        // Mark the message as read
+                        axios.put(`http://localhost:4000/api/message/markasread/${lastMessage.messageId}`, {}, markReadConfig);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            }
         } catch (error) {
             console.log(error);
         }
     };
+    useEffect(() => {
+        setLoggedInUserId(JSON.parse(localStorage.getItem('loggedInUser'))._id);
+        fetchChatData()
+    }, []);
 
-
-    useEffect(async () => {
-        setLoggedInUserId(JSON.parse(localStorage.getItem("loggedInUser"))._id)
-        fetchChatData();
-    }, [])
     useEffect(() => {
         if (tableRef.current) {
             const table = tableRef.current; //accessing the table DOM
@@ -94,7 +111,7 @@ const MessageModal = ({ modalIsOpen, toggleModal, data }) => {
                 </ModalHeader>
                 <div>
                     <div className="m-3">
-                    {!isNew && (<span className="mb-2">This message will be sent to : <strong> {data.firstname} {data.lastname}</strong> 's document,</span>)}
+                        {!isNew && (<span className="mb-2">This message will be sent to : <strong> {data.firstname} {data.lastname}</strong> 's document,</span>)}
                         <div className="mt-2">
                             {isNew && chats && chats.chat && (
                                 <div className="bg-light" style={{ maxHeight: '300px', overflowY: 'auto' }} ref={tableRef}>
@@ -138,7 +155,7 @@ const MessageModal = ({ modalIsOpen, toggleModal, data }) => {
                                 </div>
                             )}
                             <div className="col-6 mt-3">
-                            <p className="m-0 p-0" style={{fontSize: '0.8em', fontWeight: 'bold'}}><small>Type in below your message</small></p>
+                                <p className="m-0 p-0" style={{ fontSize: '0.8em', fontWeight: 'bold' }}><small>Type in below your message</small></p>
                                 <div className="form-floating">
                                     <textarea
                                         className="form-control"

@@ -10,9 +10,13 @@ const messageSchema = new mongoose.Schema({
         type: String,
         default: false, 
     },
-    isRead: {
+    Read: {
+        isRead:{
         type: Boolean,
         default: false,
+        },
+        timeOfRead:Date
+
     },
 },{timestamps:true});
 

@@ -6,6 +6,7 @@ import Dashboard from "./dashboard";
 import Logout from "@/helpers/logout";
 import MyRequests from "./myRequests";
 import Feedback from "./feedBacks";
+import Vendors from "./vendors";
 
 const Index = () => {
     const [page, setPage] = useState("Dashboard")
@@ -31,6 +32,9 @@ const Index = () => {
                         )}
                         {page === 'Feedback' && (
                             <Feedback />
+                        )}
+                        {page === 'Vendors' && (
+                            <Vendors />
                         )}
                     </div>
                 </div>

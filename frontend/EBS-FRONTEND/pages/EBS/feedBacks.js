@@ -15,6 +15,7 @@ import ApproveItemModal from "@/components/Modals/ApproveItemModal";
 
 const Feedback = () => {
     const [data, setData] = useState([])
+    const [loggedInUserId, setLoggedInUserId] = useState('')
     const [messageModal, setMessageModal] = useState(false)
     const [messageData, setMessageData] = useState({
         receiver: "",
@@ -36,6 +37,7 @@ const Feedback = () => {
         setMessageModal(true)
     }
     useEffect(async () => {
+        setLoggedInUserId(JSON.parse(localStorage.getItem('loggedInUser'))._id);
         const config = {
             headers: {
                 'Content-Type': "application/json",
@@ -49,7 +51,7 @@ const Feedback = () => {
         } catch (error) {
             console.log(error)
         }
-    }, [])
+    }, [messageModal])
     return (
         <>
             <div className="mx-4 font-monospace">
@@ -80,7 +82,7 @@ const Feedback = () => {
                             <tbody>
                                 {data.map((convo, index) => {
                                     return (
-                                        <tr key={convo._id}>
+                                        <tr key={convo._id} className={`${!convo.message[convo.message.length - 1].Read.isRead && convo.message[convo.message.length - 1].sender._id !== loggedInUserId? 'table-info': ''}`}>
                                             <td>{index + 1}</td> {/* Display a row number */}
                                             <td>{convo.itemrequest.item.ItemName}</td>
                                             <td>{convo.itemrequest.owner.firstname} {convo.itemrequest.owner.lastname}</td>

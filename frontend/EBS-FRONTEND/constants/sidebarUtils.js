@@ -43,6 +43,11 @@ const SidebarItems = {
                 icon: <i class="bi bi-chat-left-fill mx-2"></i>,
                 link: ""
             },
+            {
+                title: "Vendors",
+                icon: <i class="bi bi-receipt-cutoff mx-2"></i>,
+                link: ""
+            },
         ]
     },
     RSB: {

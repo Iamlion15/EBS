@@ -20,7 +20,7 @@ const ChangeUserPasswordModal = ({ modalIsOpen, toggleModal }) => {
             }
         }
         try {
-            const response = await axios.post("http://localhost:5000/api/user/checkpassword", data, config)
+            const response = await axios.post("http://localhost:4000/api/user/checkpassword", data, config)
             const evaluate = response.data
 
             if (evaluate.confirm == true) {
@@ -44,7 +44,7 @@ const ChangeUserPasswordModal = ({ modalIsOpen, toggleModal }) => {
             }
         }
         try {
-            const response = await axios.post("http://localhost:5000/api/user/updatepassword", data, config);
+            const response = await axios.post("http://localhost:4000/api/user/updatepassword", data, config);
             setShowConfirm(true);
             setData({
                 newpassword: "",

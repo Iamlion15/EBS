@@ -55,7 +55,7 @@ const HeaderComponent = ({ page, logout }) => {
             }
         }
         try {
-            const response = await axios.post("http://localhost:5000/api/user/update", data, config)
+            const response = await axios.post("http://localhost:4000/api/user/update", data, config)
             toast.success("Succesfully updated user !", {
                 position: toast.POSITION.BOTTOM_LEFT
             });
