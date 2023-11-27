@@ -10,7 +10,6 @@ import Vendors from "./vendors";
 
 const Index = () => {
     const [page, setPage] = useState("Dashboard")
-
     useEffect(() => {
         console.log(page);
     }, [page])
