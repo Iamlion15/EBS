@@ -5,11 +5,12 @@ const uploadDocument = require("../middlewares/uploadDocument")
 const { checkEBSAuthorization,checkFINANCEAuthorization,checkSTAFFAuthorization,checkApproversAuthorization,  } = require("../middlewares/checkAuthorization")
 
 
-const { addItem,ReviewRequest,deleteItem,getItems,getOneItem,updateItem } = require("../controller/itemController")
+const { addItem,ReviewRequest,deleteItem,getItems,getOneItem,updateItem,EBSReviewRequest } = require("../controller/itemController")
 
 
 router.post("/save", checkAuthentication, checkSTAFFAuthorization,uploadDocument, addItem)
 router.post("/approve", checkAuthentication, checkApproversAuthorization, ReviewRequest)
+router.post("/ebsapprove/:vendoritem", checkAuthentication, checkApproversAuthorization, EBSReviewRequest)
 router.post("/update", checkAuthentication, checkSTAFFAuthorization,uploadDocument, updateItem)
 router.delete("/delete/:id", checkAuthentication, checkSTAFFAuthorization, deleteItem)
 router.get("/getall", checkAuthentication, getItems)

@@ -7,11 +7,10 @@ import {
 } from 'reactstrap';
 import axios from "axios";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
-import ViewApplication from "./viewApplication";
 import MessageModal from "@/components/Modals/MoreInformationModal";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import ApproveItemModal from "@/components/Modals/ApproveItemModal";
+import ApproveItemModal from "@/components/Modals/EBSApproveItemModal";
 
 
 const MyRequests = () => {
@@ -82,8 +81,7 @@ const MyRequests = () => {
         })
         setViewItemApprove(true)
     }
-    const confirmHandler = async (e) => {
-        e.preventDefault();
+    const confirmHandler = async (selectedItemValue) => {
         const confirmData={
             id:approveData.id,
             reviewer:"EBS"
@@ -99,7 +97,7 @@ const MyRequests = () => {
             }
         }
         try {
-            const response = await axios.post("http://localhost:4000/api/item/approve",confirmData, config)
+            const response = await axios.post(`http://localhost:4000/api/item/ebsapprove/${selectedItemValue}`,confirmData, config)
             toast.update(toastId.current, { render: "Successfully sent data", type: toast.TYPE.SUCCESS, autoClose: 2000 })
             toggleApproveItemModal()
 

@@ -17,6 +17,10 @@ const itemRequestSchema=new mongoose.Schema({
     item:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"item"
+    },
+    vendoritem:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "vendoritem"
     }
 },{timestamps:true})
 

@@ -7,30 +7,39 @@ import {
 } from 'reactstrap';
 import axios from "axios";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
-import ApproveDocumentModal from "@/components/Modals/ApproveItemModal";
 import ViewApplication from "./viewApplication";
-
+import MessageModal from "@/components/Modals/MoreInformationModal";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import ApproveItemModal from "@/components/Modals/ApproveItemModal";
 
 
-const MyApplications = () => {
+const MyRequests = () => {
     const [data, setData] = useState([])
+    const [messageModal, setMessageModal] = useState(false)
     const [viewApp, setViewApp] = useState(false)
-    const [viewDocumentApprove, setViewDocumentApprove] = useState(false)
+    const [viewItemApprove, setViewItemApprove] = useState(false)
     const [details, setDetails] = useState({})
     const [approveData, setApproveData] = useState({
         id: "",
+        ItemName: "",
+        quantity: "",
         firstname: "",
         lastname: "",
-        chemicalType: "",
-        tsamples: "",
-        psamples: "",
         fileLocation: ""
     })
+    const [messageData,setMessageData]=useState({
+        receiver:"",
+        firstname:"",
+        lastname:"",
+        ItemName:""
+    })
     const toastId = useRef(null)
-    const toggleApproveDocumentModal = () => {
-        setViewDocumentApprove(!viewDocumentApprove)
+    const toggleApproveItemModal = () => {
+        setViewItemApprove(!viewItemApprove)
+    }
+    const toggleMessageModal = () => {
+        setMessageModal(!messageModal)
     }
     useEffect(async () => {
         const config = {
@@ -40,46 +49,43 @@ const MyApplications = () => {
             }
         }
         try {
-            const response = await axios.get("http://localhost:5000/api/document/getall", config)
-            const rabdata = [];
-            for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i].RAB_Approval.approved === true && response.data[i].RSB_Approval.approved === true && response.data[i].RICA_Approval.approved === false ) {
-                    rabdata.push(response.data[i])
+            const response = await axios.get("http://localhost:4000/api/item/Financegetall", config)
+            const ebsdata=[];
+            console.log(response.data);
+            for(let i=0;i<response.data.length;i++){
+                if(response.data[i].EBS_Approval.approved===false){
+                    ebsdata.push(response.data[i])
                 }
             }
-            setData(rabdata)
+            setData(ebsdata)
         } catch (error) {
             console.log(error)
         }
-    }, [viewDocumentApprove])
-
-    const checkStatus = (rabstatus, ricastatus, rsbstatus) => {
-        if (rabstatus == "true" && ricastatus == "true" && rsbstatus == "true") {
-            return "complete";
-        }
-        else {
-            return "pending";
-        }
+    }, [viewItemApprove, messageModal])
+    const showMessageModal = (info) => {
+        console.log(info);
+        setMessageData({
+            receiver:info.owner._id,
+            firstname:info.owner.firstname,
+            lastname:info.owner.lastname,
+            ItemName:info.item.ItemName,
+            itemId:info._id
+        })
+        setMessageModal(true)
     }
-    const switchView = (detail) => {
-        setDetails(detail)
-        setViewApp(true)
-    }
-    const showApproveDocument = (currentDocument) => {
-        console.log(currentDocument);
+    const showApproveItem = (currentDocument) => {
         setApproveData({
             id: currentDocument._id,
             firstname: currentDocument.owner.firstname,
             lastname: currentDocument.owner.lastname,
-            chemicalType: currentDocument.document.psamples,
+            ItemName: currentDocument.item.ItemName,
         })
-        setViewDocumentApprove(true)
+        setViewItemApprove(true)
     }
-    const confirmHandler = async (e) => {
-        e.preventDefault();
-        const confirmData = {
-            id: approveData.id,
-            reviewer: "RICA"
+    const confirmHandler = async (selectedItemValue) => {
+        const confirmData={
+            id:approveData.id,
+            reviewer:"EBS"
         }
         toastId.current = toast.info("Loading............", {
             position: toast.POSITION.TOP_LEFT,
@@ -92,21 +98,20 @@ const MyApplications = () => {
             }
         }
         try {
-            const response = await axios.post("http://localhost:5000/api/document/approve", confirmData, config)
+            const response = await axios.post('http://localhost:4000/api/item/approve',confirmData, config)
             toast.update(toastId.current, { render: "Successfully sent data", type: toast.TYPE.SUCCESS, autoClose: 2000 })
-            toggleApproveDocumentModal()
+            toggleApproveItemModal()
 
         } catch (error) {
             console.log(error)
             toast.update(toastId.current, { render: "Failure", type: toast.TYPE.ERROR, autoClose: 2000 })
         }
     }
-
     return (
         <>
             {!viewApp && (
                 <div className="mx-4 font-monospace">
-                    <p><strong> All Applications</strong></p>
+                    <p><strong> All Requests</strong></p>
                     <div className="card rounded-3 shadow-sm">
                         <div className="mx-4 mt-2">
                             <div className="d-flex justify-content-end">
@@ -123,28 +128,20 @@ const MyApplications = () => {
                                 <thead>
                                     <tr>
                                         <th>NO.</th>
-                                        <th>PRODUCER</th>
-                                        <th>CHEMICAL TYPE</th>
+                                        <th>iTEM NAME</th>
+                                        <th>STAFF NAME</th>
                                         <th>SUBMITTED ON</th>
-                                        <th>STATUS</th>
                                         <th>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.map((info, index) => {
+                                    {data.map((items, index) => {
                                         return (
-                                            <tr key={info._id}>
+                                            <tr key={items._id}>
                                                 <td>{index + 1}</td> {/* Display a row number */}
-                                                <td>{info.owner.firstname} {info.owner.lastname}</td>
-                                                <td>{info.document.tsamples}</td>
-                                                <td>{formatDateToCustomFormat(info.document.createdAt)}</td>
-                                                <td>
-                                                    {checkStatus(
-                                                        info.RAB_Approval.approved,
-                                                        info.RICA_Approval.approved,
-                                                        info.RSB_Approval.approved
-                                                    )}
-                                                </td>
+                                                <td>{items.item.ItemName}</td>
+                                                <td>{items.owner.firstname} {items.owner.lastname}</td>
+                                                <td>{formatDateToCustomFormat(items.item.createdAt)}</td>
                                                 <td className="d-flex justify-content-center">
                                                     <UncontrolledDropdown>
                                                         <DropdownToggle
@@ -157,13 +154,20 @@ const MyApplications = () => {
                                                         </DropdownToggle>
                                                         <DropdownMenu className="dropdown-menu-arrow" right>
                                                             <DropdownItem
-                                                                onClick={() => showApproveDocument(info)}
+                                                                onClick={() => showApproveItem(items)}
                                                             >
-                                                                Review Application
+                                                                <div className='d-flex flex-row'>
+                                                                <i class="bi bi-pencil-square"></i>
+                                                                    <p className='mx-3 my-0 py-0'>Review request</p>
+                                                                </div>
                                                             </DropdownItem>
                                                             <DropdownItem
-                                                                onClick={() => switchView(info)}>
-                                                                View application
+                                                                onClick={() => showMessageModal(items)}
+                                                            >
+                                                                <div className='d-flex flex-row'>
+                                                                <i class="bi bi-chat-left-dots-fill"></i>
+                                                                    <p className='mx-3 my-0 py-0 text-muted'>More information</p>
+                                                                </div>
                                                             </DropdownItem>
                                                         </DropdownMenu>
                                                     </UncontrolledDropdown>
@@ -176,14 +180,23 @@ const MyApplications = () => {
                         </div>
                     </div>
                     <div>
-                        {viewDocumentApprove && <ApproveDocumentModal
-                            modalIsOpen={viewDocumentApprove}
-                            toggleModal={toggleApproveDocumentModal}
+                        {viewItemApprove && <ApproveItemModal
+                            modalIsOpen={viewItemApprove}
+                            toggleModal={toggleApproveItemModal}
                             data={approveData}
+                            setData={setApproveData}
                             confirmHandler={confirmHandler}
 
                         />}
                     </div>
+                    {messageModal && (
+                        <MessageModal
+                            toggleModal={toggleMessageModal}
+                            modalIsOpen={messageModal}
+                            data={messageData}
+                            ToastContainer={ToastContainer}
+                        />
+                    )}
                     <div>
                         <ToastContainer />
                     </div>
@@ -192,11 +205,6 @@ const MyApplications = () => {
             {viewApp && (
                 <ViewApplication document={details}
                     setViewApp={setViewApp}
-                    viewDocumentApprove={viewDocumentApprove}
-                    toggleApproveDocumentModal={toggleApproveDocumentModal}
-                    approveData={approveData}
-                    confirmHandler={confirmHandler}
-                    showApproveDocument={showApproveDocument}
                 />
             )}
 
@@ -204,4 +212,4 @@ const MyApplications = () => {
     )
 }
 
-export default MyApplications;
+export default MyRequests;

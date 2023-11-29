@@ -1,4 +1,16 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+
+const propertySchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    value: {
+        type: String,
+        required: true
+    },
+});
+
 
 const vendorItemSchema = new mongoose.Schema({
     itemName: {
@@ -13,23 +25,12 @@ const vendorItemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    properties: [
-        {
-            title: {
-                type: String,
-                required: true
-            },
-            value: {
-                type: String,
-                required: true
-            },
-        }
-    ],
+    properties: [propertySchema],
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "vendor"
     }
-})
+});
 
 const vendorItemModel = mongoose.model("vendoritem", vendorItemSchema);
 

@@ -23,9 +23,6 @@ const Index = () => {
                         {page === "Dashboard" && (
                             <Dashboard />
                         )}
-                        {/* {page === "Applications" && (
-                            <AddProduct />
-                        )} */}
                         {page === 'Review Requests' && (
                             <MyRequests />
                         )}

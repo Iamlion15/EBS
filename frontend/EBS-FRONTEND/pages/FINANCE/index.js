@@ -2,9 +2,9 @@ import { useState, useEffect } from "react"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from "@/components/sideNav/sidebar"
 import HeaderComponent from "../../components/Header/Header"
-import Dashboard from "./dashboard";
+import MyRequests from "./myRequests";
+import Feedback from "./feedBacks";
 import Logout from "@/helpers/logout";
-import MyApplications from "./myApplications";
 
 const Index = () => {
     const [page, setPage] = useState("Dashboard")
@@ -19,14 +19,14 @@ const Index = () => {
                 <div className="col-9">
                     <HeaderComponent page={page} logout={Logout}/>
                     <div className="mt-4 p-4">
-                        {page === "Dashboard" && (
+                    {page === "Dashboard" && (
                             <Dashboard />
                         )}
-                        {/* {page === "Applications" && (
-                            <AddProduct />
-                        )} */}
-                        {page === 'Review Applications' && (
-                            <MyApplications />
+                        {page === 'Review Requests' && (
+                            <MyRequests />
+                        )}
+                        {page === 'Feedback' && (
+                            <Feedback />
                         )}
 
                     </div>

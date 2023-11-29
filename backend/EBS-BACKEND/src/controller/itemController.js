@@ -111,16 +111,35 @@ exports.ReviewRequest = async (req, res) => {
         const month = String(currentDate.getMonth() + 1).padStart(2, '0');
         const day = String(currentDate.getDate()).padStart(2, '0');
         const formattedDate = `${year}-${month}-${day}`;
-        if (reviewer === "FINANCE") {
-            item.Finance_Approval.approved = true
-            item.Finance_Approval.timeOfApproval = formattedDate
+        item.Finance_Approval.approved = true
+        item.Finance_Approval.timeOfApproval = formattedDate
+        await item.save();
+        res.status(200).json({ message: "Successfully reviewed item" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+}
+
+
+
+exports.EBSReviewRequest = async (req, res) => {
+    try {
+        const vendor = req.params.vendoritem
+        const reviewer = req.body.reviewer;
+        const item = await itemRequestModel.findOne({ _id: req.body.id });
+        if (!item) {
+            return res.status(404).json({ message: 'item not found' });
         }
-        else {
-            if (reviewer === "EBS") {
-                item.EBS_Approval.approved = true
-                item.EBS_Approval.timeOfApproval = formattedDate
-            }
-        }
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        item.EBS_Approval.approved = true
+        item.EBS_Approval.timeOfApproval = formattedDate
+        item.vendoritem = vendor
+
         await item.save();
         res.status(200).json({ message: "Successfully reviewed item" });
     } catch (err) {

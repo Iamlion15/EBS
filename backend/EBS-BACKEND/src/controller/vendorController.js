@@ -5,26 +5,38 @@ const vendorItems = require("../model/vendorItems")
 exports.saveVendor = async (req, res) => {
     const newVendor = new vendorModel(req.body);
     try {
-        await newVendor.save();
-        res.status(200).json({ message: "successful vendor" })
+        const vendor = await newVendor.save();
+        res.status(200).json(vendor)
     } catch (err) {
         console.log(err);
         res.status(400).json({ error: err })
     }
 }
-
 
 exports.saveVendorItem = async (req, res) => {
-    console.log(req.body)
-    const newVendorItem = new vendorItems(req.body);
     try {
-        await newVendorItem.save();
-        res.status(200).json({ message: "successful vendor" })
+        const vendorid = req.params.vendorid;
+        // Assuming req.body is an array of items
+        const itemsData = req.body;
+
+        for(let i=0;i<itemsData.length;i++){
+            const newVendorItem=new vendorItems({
+                category: itemsData[i].category,
+                itemName: itemsData[i].itemName,
+                itemPrice: itemsData[i].itemPrice,
+                properties:itemsData[i].properties,
+                owner: vendorid
+            });
+            
+            await newVendorItem.save();
+        }
+        res.status(200).json({ message: "Successful vendor item creation" });
     } catch (err) {
-        console.log(err);
-        res.status(400).json({ error: err })
+        console.error(err);
+        res.status(400).json({ error: err.message });
     }
-}
+};
+
 
 exports.getVendors = async (req, res) => {
     try {
@@ -35,11 +47,12 @@ exports.getVendors = async (req, res) => {
     }
 }
 exports.getVendorItems = async (req, res) => {
-    const vendor=req.params.vendor
+    const vendor = req.params.vendor
     try {
-        const vendorItems = await vendorModel.find({owner:vendor});
-        res.status(200).json(vendorItems)
+        const items = await vendorItems.find({ owner: vendor });
+        res.status(200).json(items)
     } catch (err) {
+        console.log(err);
         res.status(400).json({ error: err })
     }
 }
@@ -78,7 +91,7 @@ exports.updateVendorItem = async (req, res) => {
         if (!vendorItem) {
             return res.status(404).json({ message: 'vendor not found' });
         }
-        await vendorItems.findOneAndUpdate(vendorItem._id,req.body);
+        await vendorItems.findOneAndUpdate(vendorItem._id, req.body);
         res.status(200).json({ message: "Successfully updated vendor item" });
     } catch (err) {
         console.log(err);
