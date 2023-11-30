@@ -75,6 +75,15 @@ exports.getItems = async (req, res) => {
     }
 }
 
+exports.getFinanceItems = async (req, res) => {
+    try {
+        const items = await itemRequestModel.find().populate("item").populate("owner").populate("vendoritem");
+        res.status(200).json(items)
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
 exports.getOneItem = async (req, res) => {
     const id = req.params.id
     try {

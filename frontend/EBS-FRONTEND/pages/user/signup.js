@@ -132,11 +132,12 @@ const UserSignup = () => {
                                     </div>
                                 </form>
                             </div>
-                            <div className="col">
-                                <Image
-                                    src="/images/logine.jpg"
+                            <div className="col mt-5">
+                            <Image
+                                    className="mx-2"
+                                    src="/images/logo.png"
                                     width={500}
-                                    height={500}
+                                    height={200}
                                 />
                             </div>
                         </div>

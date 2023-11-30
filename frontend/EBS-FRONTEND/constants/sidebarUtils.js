@@ -50,32 +50,24 @@ const SidebarItems = {
             },
         ]
     },
-    RSB: {
+    FINANCE: {
         items: [
             {
                 ...defaultItem,
                 link: ""
             },
             {
-                title: "Review Applications",
+                title: "Review Requests",
                 icon: <i class="bi bi-binoculars-fill mx-2"></i>,
+                link: ""
+            },
+            {
+                title: "Feedback",
+                icon: <i class="bi bi-chat-left-fill mx-2"></i>,
                 link: ""
             },
         ]
     }, 
-    RICA: {
-        items: [
-            {
-                ...defaultItem,
-                link: ""
-            },
-            {
-                title: "Review Applications",
-                icon: <i class="bi bi-binoculars-fill mx-2"></i>,
-                link: ""
-            },
-        ]
-    }
 
 }
 

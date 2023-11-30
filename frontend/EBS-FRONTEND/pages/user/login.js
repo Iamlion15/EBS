@@ -37,8 +37,8 @@ const UserLogin = () => {
             else if (role === "EBS") {
                 Router.push("/EBS")
             }
-            else if (role === "RSB") {
-                Router.push("/RSB")
+            else if (role === "FINANCE") {
+                Router.push("/FINANCE")
             }
             else {
                 if (role === "RAB") {
@@ -112,7 +112,8 @@ const UserLogin = () => {
                             </div>
                             <div className="col">
                                 <Image
-                                    src="/images/logine.jpg"
+                                    className="mb-5"
+                                    src="/images/logo3.png"
                                     width={500}
                                     height={500}
                                 />

@@ -5,6 +5,7 @@ import HeaderComponent from "../../components/Header/Header"
 import MyRequests from "./myRequests";
 import Feedback from "./feedBacks";
 import Logout from "@/helpers/logout";
+import Dashboard from "./dashboard";
 
 const Index = () => {
     const [page, setPage] = useState("Dashboard")

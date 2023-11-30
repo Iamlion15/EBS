@@ -7,7 +7,6 @@ import {
 } from 'reactstrap';
 import axios from "axios";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
-import ViewApplication from "./viewApplication";
 import MessageModal from "@/components/Modals/MoreInformationModal";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -49,15 +48,15 @@ const MyRequests = () => {
             }
         }
         try {
-            const response = await axios.get("http://localhost:4000/api/item/Financegetall", config)
-            const ebsdata=[];
+            const response = await axios.get("http://localhost:4000/api/item/financegetall", config)
+            const financedata=[];
             console.log(response.data);
             for(let i=0;i<response.data.length;i++){
-                if(response.data[i].EBS_Approval.approved===false){
-                    ebsdata.push(response.data[i])
+                if(response.data[i].EBS_Approval.approved===true && response.data[i].Finance_Approval.approved===false){
+                    financedata.push(response.data[i])
                 }
             }
-            setData(ebsdata)
+            setData(financedata)
         } catch (error) {
             console.log(error)
         }

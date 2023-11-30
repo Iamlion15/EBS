@@ -7,7 +7,6 @@ import {
 } from 'reactstrap';
 import axios from "axios";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
-import ViewApplication from "./viewApplication";
 import MessageModal from "@/components/Modals/MoreInformationModal";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import DashboardCard from "@/components/dashboardComponent/ApproversDashboardCard";
+import DashboardCard from "@/components/dashboardComponent/ItemDashboard";
 import axios from "axios";
 
 
@@ -16,7 +16,7 @@ const Dashboard = () => {
             }
         }
         try {
-            const response = await axios.get("http://localhost:5000/api/document/rsbstatistics", config);
+            const response = await axios.get("http://localhost:4000/api/item/ebsstatistics", config);
             console.log(response.data);
             setData({
                 pending: response.data.pending,
@@ -28,9 +28,11 @@ const Dashboard = () => {
     }, [])
     return (
         <>
-            <div className="row mt-5">
-                <DashboardCard color="bg-warning" message="pending application(s)" icon="bi-stopwatch" number={data.pending} />
-                <DashboardCard color="bg-success" message="approved application(s)" icon="bi-file-earmark-check-fill" number={data.approved} />
+            <div className="row mt-5 mb-2">
+                <div className="d-flex justify-content-around">
+                    <DashboardCard color="#ff1900" message="approved request(s)" icon="bi-journal-check" number={data.approved} className="mt-2" bgcolor="#fde9ea" />
+                    <DashboardCard color="#4c97ff" message="pending request(s)" icon="bi-stopwatch" number={data.pending} className="mt-2" bgcolor="#edecff" />
+                </div>
             </div>
         </>
     )

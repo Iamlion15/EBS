@@ -41,7 +41,7 @@ const Sidebar = ({page,setPage,logout}) => {
                                     height={100}       
                                 />
                                 </div>
-                        <span className="fs-4 font-monospace mt-3 d-flex justify-content-center"><strong>EBS PROCUREMENT</strong></span>
+                        <span className="fs-4 font-monospace mt-3 d-flex justify-content-center"><strong>Enterprise Business Services</strong></span>
                         </div>
                     </div>
                     <hr />
