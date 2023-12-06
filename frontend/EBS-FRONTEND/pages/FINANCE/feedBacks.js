@@ -26,9 +26,8 @@ const Feedback = () => {
         setMessageModal(!messageModal)
     }
     const showMessageModal = (info) => {
-        console.log(info);
         setMessageData({
-            receiver: info.itemrequest.owner._id,
+            receiver: info.itemrequest.reviewer,
             firstname: info.itemrequest.owner.firstname,
             lastname: info.itemrequest.owner.lastname,
             ItemName: info.itemrequest.item.ItemName,
@@ -45,7 +44,6 @@ const Feedback = () => {
         }
         try {
             const response = await axios.get("http://localhost:4000/api/message/getmessages", config)
-            console.log(response.data);
             setData(response.data)
         } catch (error) {
             console.log(error)

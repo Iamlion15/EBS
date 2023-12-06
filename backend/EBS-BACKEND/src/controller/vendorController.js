@@ -1,9 +1,27 @@
 const vendorModel = require("../model/vendorModel")
 const vendorItems = require("../model/vendorItems")
+const path = require("path")
 
 
 exports.saveVendor = async (req, res) => {
-    const newVendor = new vendorModel(req.body);
+    let fileLocation;
+    if (req.file) {
+        fileLocation = path.resolve(req.file.path)
+    } else {
+        return res.status(400).json({ error: 'No file was uploaded' });
+    }
+    const newVendor = new vendorModel({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        phone: req.body.phone,
+        email: req.body.email,
+        contract: {
+            startDate: req.body.startDate,
+            endDate: req.body.endDate,
+            fileLocation: fileLocation
+        }
+    });
+    console.log(newVendor);
     try {
         const vendor = await newVendor.save();
         res.status(200).json(vendor)
@@ -19,12 +37,12 @@ exports.saveVendorItem = async (req, res) => {
         // Assuming req.body is an array of items
         const itemsData = req.body;
 
-        for(let i=0;i<itemsData.length;i++){
-            const newVendorItem=new vendorItems({
+        for (let i = 0; i < itemsData.length; i++) {
+            const newVendorItem = new vendorItems({
                 category: itemsData[i].category,
                 itemName: itemsData[i].itemName,
                 itemPrice: itemsData[i].itemPrice,
-                properties:itemsData[i].properties,
+                properties: itemsData[i].properties,
                 owner: vendorid
             });
             
@@ -107,3 +125,21 @@ exports.deleteVendorItem = async (req, res) => {
         res.status(400).json({ error: err })
     }
 }
+
+exports.updateVendorContract = async (req, res) => {
+    try {
+        const vendor = await vendorModel.findOne({ _id: req.body.id });
+        if (!vendor) {
+            return res.status(400).json({ message: 'Vendor not found' });
+        }
+        vendor.contract.startDate = req.body.startDate;
+        vendor.contract.endDate = req.body.endDate;
+
+        await vendorModel.findOneAndUpdate({ _id: vendor._id }, vendor);
+        res.status(200).json({ message: 'Successfully updated vendor item' });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+

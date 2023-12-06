@@ -90,6 +90,9 @@ const MessageModal = ({ modalIsOpen, toggleModal, data }) => {
         setLoggedInUserId(JSON.parse(localStorage.getItem('loggedInUser'))._id);
         fetchChatData()
     }, []);
+    useEffect(()=>{
+        
+    },[])
 
     useEffect(() => {
         if (tableRef.current) {

@@ -1,6 +1,9 @@
 const itemModel = require("../model/ItemModel")
 const itemRequestModel = require("../model/ItemRequest")
+const vendorItemModel = require("../model/vendorItems")
+const vendorModel = require("../model/vendorModel")
 const path = require("path")
+const sendMail = require("../helpers/MailConfig")
 
 
 
@@ -137,6 +140,8 @@ exports.EBSReviewRequest = async (req, res) => {
         const vendor = req.params.vendoritem
         const reviewer = req.body.reviewer;
         const item = await itemRequestModel.findOne({ _id: req.body.id });
+        const vendor_item = await vendorItemModel.findOne({ _id: vendor });
+        const vendor_owner = await vendorModel.findOne({ _id: vendor_item.owner })
         if (!item) {
             return res.status(404).json({ message: 'item not found' });
         }
@@ -148,7 +153,10 @@ exports.EBSReviewRequest = async (req, res) => {
         item.EBS_Approval.approved = true
         item.EBS_Approval.timeOfApproval = formattedDate
         item.vendoritem = vendor
-
+        item.reviewer=reviewer._id;
+        const vendorName = vendor_owner.firstname + " " + vendor_owner.lastname
+        const deliveryDetails = vendor_item.itemName
+        await sendMail(vendor_owner.email, vendorName, deliveryDetails)
         await item.save();
         res.status(200).json({ message: "Successfully reviewed item" });
     } catch (err) {

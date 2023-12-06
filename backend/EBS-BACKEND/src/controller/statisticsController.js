@@ -1,4 +1,5 @@
 const itemrequest = require("../model/ItemRequest")
+const vendorModel = require("../model/vendorModel")
 
 exports.itemStatistics = async (req, res) => {
     try {
@@ -66,6 +67,32 @@ exports.CountDocumentsByFinanceApproval = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Server error' });
+    }
+};
+
+exports.checkVendorContracts = async (req, res) => {
+    try {
+        const today = new Date();
+        const threeDaysFromToday = new Date(today);
+        threeDaysFromToday.setDate(today.getDate() + 3);
+        // Find all vendors
+        const vendors = await vendorModel.find();
+        let count=0;
+        // Array to store IDs that meet the condition
+        const idsToNotify = [];
+        // Iterate through each vendor
+        vendors.forEach((vendor) => {
+            // Check if the end date is within 3 days from today
+            if (vendor.contract.endDate > today && vendor.contract.endDate <= threeDaysFromToday) {
+                // Add the vendor's ID to the array
+                idsToNotify.push(vendor);
+                count=count+1;
+                // Implement your logic to send a message here if needed
+            }
+        });
+        res.status(200).json({idsToNotify,count});
+    } catch (error) {
+        res.status(500).json({ "error": error.message });
     }
 };
 

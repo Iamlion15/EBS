@@ -84,7 +84,7 @@ const MyRequests = () => {
     const confirmHandler = async (selectedItemValue) => {
         const confirmData={
             id:approveData.id,
-            reviewer:"EBS"
+            reviewer:JSON.parse(localStorage.getItem("loggedInUser"))
         }
         toastId.current = toast.info("Loading............", {
             position: toast.POSITION.TOP_LEFT,

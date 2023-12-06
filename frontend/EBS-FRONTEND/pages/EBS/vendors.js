@@ -17,7 +17,12 @@ const Vendors = () => {
         firstname: "",
         lastname: "",
         email: "",
-        phone: ""
+        phone: "",
+        contract:{
+            file:"",
+            startDate:"",
+            endDate:""
+        }        
     });
     const [items, setItems] = useState([{
         itemName: "", itemPrice: "", category: "ELECTRONICS", properties: []
@@ -47,13 +52,28 @@ const Vendors = () => {
                 'Authorization': JSON.parse(localStorage.getItem("token"))
             }
         }
+        const formdata = new FormData();
+        formdata.append('firstname', data.firstname)
+        formdata.append('lastname', data.lastname);
+        formdata.append('email', data.email);
+        formdata.append('phone', data.phone);
+        formdata.append('startDate', data.contract.startDate)
+        formdata.append('endDate', data.contract.endDate)
+        formdata.append('file', data.contract.file)
+        const vendorConfig = {
+            headers: {
+                'Content-Type': "multipart/form-data",
+                'Authorization': JSON.parse(localStorage.getItem("token"))
+            }
+        }
         try {
             console.log("items", items);
             console.log("data", data)
-            const response = await axios.post("http://localhost:4000/api/vendor/save", data, config)
+            const response = await axios.post("http://localhost:4000/api/vendor/save", formdata, vendorConfig)
             const vendorid = response.data._id
             const response1 = await axios.post(`http://localhost:4000/api/vendor/save/vendoritems/${vendorid}`, items, config)
             toast.update(toastId.current, { render: "Successfully sent data", type: toast.TYPE.SUCCESS, autoClose: 2000 })
+            setStep(1);
         } catch (error) {
             console.log(error)
             toast.update(toastId.current, { render: "Failure", type: toast.TYPE.ERROR, autoClose: 2000 })

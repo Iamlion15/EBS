@@ -9,6 +9,7 @@ import UpdateUserModal from '../Modals/updateUserModal';
 import ChangeUserPasswordModal from '../Modals/changePasswordModal';
 import GenerateReportModal from '../Modals/generateReportModal';
 import { ToastContainer, toast } from "react-toastify";
+import RenewContract from '../Modals/renewContract';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
@@ -22,6 +23,14 @@ const HeaderComponent = ({ page, logout }) => {
         nID: "",
         email: "",
     })
+    const [contractDetails, setContractDetails] = useState({
+        contracts: [],
+        count: ""
+    })
+    const [renewContractModal, setRenewContractModal] = useState(false);
+    const toggleRenewalModal = () => {
+        setRenewContractModal(!renewContractModal);
+    }
     // const[userData,setUserD]
     useEffect(() => {
         setUser(JSON.parse(localStorage.getItem('user')))
@@ -67,6 +76,23 @@ const HeaderComponent = ({ page, logout }) => {
             console.log(error)
         }
     }
+    useEffect(async () => {
+        const config = {
+            headers: {
+                'Content-Type': "application/json",
+                'Authorization': JSON.parse(localStorage.getItem("token"))
+            }
+        }
+        try {
+            const response = await axios.get("http://localhost:4000/api/vendor/checkvendorcontract", config)
+            setContractDetails({
+                contracts: response.data.idsToNotify,
+                count: response.data.count
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }, [page, renewContractModal])
     return (
         <header className="border-bottom shadow font-monospace" style={{ width: "100%", backgroundColor: "#ffffff" }}>
             <div className="container pt-1">
@@ -74,6 +100,13 @@ const HeaderComponent = ({ page, logout }) => {
                     <div className="d-flex align-items-center">
                         <p className='mt-2'> {page}</p>
                     </div>
+                    {contractDetails.count !== 0 && user.role === "EBS" && (<div className="position-relative" style={{ cursor: "pointer" }} onClick={toggleRenewalModal}>
+                        <i className="bi bi bi-bell" style={{ fontSize: '1.5em' }}></i>
+                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {contractDetails.count}
+                            <span className="visually-hidden">contracts that need renewal</span>
+                        </span>
+                    </div>)}
                     <UncontrolledDropdown group>
                         <i className="bi bi-person-circle mx-2" style={{ fontSize: '1.7em' }}></i>
                         <p className='mt-2'>{user.username}</p>
@@ -144,6 +177,13 @@ const HeaderComponent = ({ page, logout }) => {
                     <GenerateReportModal
                         modalIsOpen={reportModal}
                         toggleModal={toggleReportModal} />
+                </div>
+                <div>
+                    {renewContractModal && <RenewContract
+                        modalIsOpen={renewContractModal}
+                        toggleModal={toggleRenewalModal}
+                        contractData={contractDetails.contracts}
+                    />}
                 </div>
             </div>
             <div>

@@ -27,10 +27,10 @@ const uploadDocumentMiddleware = (req, res, next) => {
     upload.single('file')(req, res, (err) => {
       if (err instanceof multer.MulterError) {
         // Handle Multer errors (e.g., file size exceeded)
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ error: err });
       } else if (err) {
         // Handle the custom file filter error (e.g., non-PDF file)
-        res.status(400).json({ error: err.message });
+        res.status(400).json({ error: err });
       } else {
         // The file is uploaded and validated
         next();

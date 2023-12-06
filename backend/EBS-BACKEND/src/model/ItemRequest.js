@@ -21,6 +21,10 @@ const itemRequestSchema=new mongoose.Schema({
     vendoritem:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "vendoritem"
+    },
+    reviewer:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
     }
 },{timestamps:true})
 

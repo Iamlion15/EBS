@@ -64,7 +64,7 @@ const MyRequests = () => {
     const showMessageModal = (info) => {
         console.log(info);
         setMessageData({
-            receiver:info.owner._id,
+            receiver:info.reviewer,
             firstname:info.owner.firstname,
             lastname:info.owner.lastname,
             ItemName:info.item.ItemName,

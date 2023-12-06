@@ -23,7 +23,7 @@ const VendorView = ({toggleView}) => {
             <div className="font-monospace  rounded-3 border-4" style={{ backgroundColor: "#ffffff" }}>
                 <div className="row m-3">
                     <div className="d-flex justify-content-center">
-                        <p className="display-5 text-primary">List of vendors</p>
+                        <p className="display-5 text-primary">vendor information</p>
                     </div>
                 </div>
             </div>

@@ -36,7 +36,7 @@ const ListOfVendors = ({ vendors,toggleView }) => {
                         <td>LAST NAME</td>
                         <td>EMAIL</td>
                         <td>PHONE</td>
-                        <td className="text-primary">More Actions</td>
+                        {/* <td className="text-primary">More Actions</td> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -48,7 +48,7 @@ const ListOfVendors = ({ vendors,toggleView }) => {
                                     <td>{vendor.lastname}</td>
                                     <td>{vendor.email}</td>
                                     <td>{vendor.phone}</td>
-                                    <td>
+                                    {/* <td>
                                         <div className='d-flex justify-content-center'>
                                         <UncontrolledDropdown>
                                             <DropdownToggle
@@ -89,7 +89,7 @@ const ListOfVendors = ({ vendors,toggleView }) => {
                                             </DropdownMenu>
                                         </UncontrolledDropdown>
                                         </div>
-                                    </td>
+                                    </td> */}
                                 </tr>
                             </>
                         )
