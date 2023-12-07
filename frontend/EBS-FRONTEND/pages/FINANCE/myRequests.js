@@ -25,7 +25,11 @@ const MyRequests = () => {
         quantity: "",
         firstname: "",
         lastname: "",
-        fileLocation: ""
+        reviewerFirstName:"",
+        reviewerLastName:"",
+        itemAssigned:"",
+        vendorName:"",
+        price:"",
     })
     const [messageData,setMessageData]=useState({
         receiver:"",
@@ -72,12 +76,18 @@ const MyRequests = () => {
         })
         setMessageModal(true)
     }
-    const showApproveItem = (currentDocument) => {
+    const showApproveItem = (requestedItem) => {
         setApproveData({
-            id: currentDocument._id,
-            firstname: currentDocument.owner.firstname,
-            lastname: currentDocument.owner.lastname,
-            ItemName: currentDocument.item.ItemName,
+            id: requestedItem._id,
+            firstname: requestedItem.owner.firstname,
+            lastname: requestedItem.owner.lastname,
+            ItemName: requestedItem.item.ItemName,
+            reviewerFirstName:requestedItem.reviewer.firstname,
+            reviewerLastName:requestedItem.reviewer.lastname,
+            itemAssigned:requestedItem.vendoritem.itemName,
+            price:requestedItem.vendoritem.itemPrice,
+            vendorPhone:requestedItem.vendoritem.owner.phone,
+            vendorEmail:requestedItem.vendoritem.owner.email,
         })
         setViewItemApprove(true)
     }
