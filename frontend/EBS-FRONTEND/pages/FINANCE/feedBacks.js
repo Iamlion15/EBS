@@ -44,6 +44,7 @@ const Feedback = () => {
         }
         try {
             const response = await axios.get("http://localhost:4000/api/message/getmessages", config)
+            console.log(response.data)
             setData(response.data)
         } catch (error) {
             console.log(error)
@@ -70,7 +71,7 @@ const Feedback = () => {
                                 <tr>
                                     <th>NO.</th>
                                     <th>iTEM NAME</th>
-                                    <th>STAFF NAME</th>
+                                    <th>EBS STAFF NAME</th>
                                     <th>SUBMITTED ON</th>
                                     <th>CONVERSATION STARTED</th>
                                     <th>ACTIONS</th>
@@ -79,10 +80,18 @@ const Feedback = () => {
                             <tbody>
                                 {data.map((convo, index) => {
                                     return (
-                                        <tr key={convo._id} className={`${!convo.message[convo.message.length - 1].Read.isRead && convo.message[convo.message.length - 1].sender._id !== loggedInUserId? 'table-info': ''}`}>
+                                        <tr key={convo._id} className={`${!convo.message[convo.message.length - 1].Read.isRead && convo.message[convo.message.length - 1].sender._id !== loggedInUserId ? 'table-info' : ''}`}>
                                             <td>{index + 1}</td> {/* Display a row number */}
                                             <td>{convo.itemrequest.item.ItemName}</td>
-                                            <td>{convo.itemrequest.owner.firstname} {convo.itemrequest.owner.lastname}</td>
+                                            <td>
+                                                {convo.participants.map((participant) => (
+                                                    loggedInUserId !== participant._id && (
+                                                        <span key={participant._id}>
+                                                            {participant.firstname} {participant.lastname}
+                                                        </span>
+                                                    )
+                                                ))}
+                                            </td>
                                             <td>{formatDateToCustomFormat(convo.itemrequest.item.createdAt)}</td>
                                             <td>{formatDateToCustomFormat(convo.createdAt)}</td>
                                             <td className="d-flex justify-content-center">

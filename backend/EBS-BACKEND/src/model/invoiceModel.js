@@ -1,15 +1,23 @@
 const mongoose = require("mongoose")
 
-const InvoiceSchema = new mongoose.Schema({
-    vendor: {
-        type: String,
-        required: true
+const invoiceSchema = new mongoose.Schema({
+    vendoritem: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"vendoritem"
     },
-    value: {
-        type: String,
-        required: true
+    requestedBy: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
     },
-})
-const propertyModel = mongoose.model("property", propertySchema);
+    financeApprovedBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    },
+    EBSApprovedBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"user"
+    }
+},{timestamps:true})
+const invoiceModel = mongoose.model("invoice", invoiceSchema);
 
-module.exports = vendorModel;
+module.exports = invoiceModel;

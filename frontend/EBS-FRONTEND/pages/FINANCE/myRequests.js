@@ -79,11 +79,15 @@ const MyRequests = () => {
     const showApproveItem = (requestedItem) => {
         setApproveData({
             id: requestedItem._id,
+            ownerid:requestedItem.owner._id,
             firstname: requestedItem.owner.firstname,
             lastname: requestedItem.owner.lastname,
             ItemName: requestedItem.item.ItemName,
+            itemid:requestedItem.item._id,
+            reviewerid:requestedItem.reviewer._id,
             reviewerFirstName:requestedItem.reviewer.firstname,
             reviewerLastName:requestedItem.reviewer.lastname,
+            vendoritemid:requestedItem.vendoritem._id,
             itemAssigned:requestedItem.vendoritem.itemName,
             price:requestedItem.vendoritem.itemPrice,
             vendorPhone:requestedItem.vendoritem.owner.phone,
@@ -91,10 +95,10 @@ const MyRequests = () => {
         })
         setViewItemApprove(true)
     }
-    const confirmHandler = async (selectedItemValue) => {
+    const confirmHandler = async (approveData) => {
         const confirmData={
             id:approveData.id,
-            reviewer:"EBS"
+            reviewer:"FINANCE"
         }
         toastId.current = toast.info("Loading............", {
             position: toast.POSITION.TOP_LEFT,

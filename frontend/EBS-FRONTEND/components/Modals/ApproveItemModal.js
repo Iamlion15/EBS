@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, ModalHeader } from "reactstrap";
 
 
-const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) => {
+const ApproveItemModal = ({ modalIsOpen, toggleModal, data,setData, confirmHandler }) => {
     const [activateConfrim, setActivateConfirm] = useState(false);
     const [activateVendorDetails, setActivateVendorDetails] = useState(false)
     const [activateVendorPhone, setActivateVendorPhone] = useState(false)
     const [defaultNumber, setDefaultNumber] = useState(true)
+    const [validatePhone,setValidatePhone]=useState(false)
+    const [oldNumber,setOldNumber]=useState('')
+    const [count,setCount]=useState(0)
     const handleInput = (e) => {
         const input = e.target.value
         if (input === data.ItemName) {
@@ -22,6 +25,33 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
     const toggleActivateVendorPhone=()=>{
         setActivateVendorPhone(true)
     }
+    const handlePhoneNumberInputChange=(e)=>{
+        const value=e.target.value;
+        setData({...data,vendorPhone:value})
+        CheckIfPhoneIsValid(value)
+    }
+    const CheckIfPhoneIsValid=(phone)=>{
+        if(phone.length ===10){
+            setValidatePhone(true)
+            setActivateConfirm(true)
+        }
+        else{
+            setValidatePhone(false)
+            setActivateConfirm(false)
+        }
+    }
+    useEffect(()=>{
+        CheckIfPhoneIsValid(data.vendorPhone)
+        if(count !==0){
+            if(!defaultNumber){
+                setData({...data,vendorPhone:oldNumber})
+            }
+        }
+        setCount(count+1)
+    },[defaultNumber])
+    useEffect(()=>{
+        setOldNumber(data.vendorPhone)
+    },[])
     return (
         <Modal isOpen={modalIsOpen} toggle={() => toggleModal()} className="d-flex align-items-center justify-content-center font-monospace" size='md'>
             <div>
@@ -77,7 +107,7 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
                                     </label>
                                 </div>
                                 <div>
-                                    <input type="text" className="form-control mx-2" value={data.vendorPhone} disabled={defaultNumber} />
+                                    <input type="text" className={`form-control mx-2 ${validatePhone? "is-valid":"is-invalid"}`} value={data.vendorPhone} disabled={defaultNumber} onChange={handlePhoneNumberInputChange}/>
                                 </div>
                             </div>
                         </div>

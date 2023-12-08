@@ -26,9 +26,16 @@ const Feedback = () => {
         setMessageModal(!messageModal)
     }
     const showMessageModal = (info) => {
-        console.log(info);
+        let receiverId;
+        for (let i = 0; i < info.participants.length; i++) {
+            console.log(info.participants[i]._id);
+            if (info.participants[i]._id !== loggedInUserId) {
+                receiverId = info.participants[i]._id
+            }
+        }
+        console.log("receiver", receiverId);
         setMessageData({
-            receiver: info.itemrequest.owner._id,
+            receiver: receiverId,
             firstname: info.itemrequest.owner.firstname,
             lastname: info.itemrequest.owner.lastname,
             ItemName: info.itemrequest.item.ItemName,
@@ -74,19 +81,35 @@ const Feedback = () => {
                                     <th>iTEM NAME</th>
                                     <th>STAFF NAME</th>
                                     <th>SUBMITTED ON</th>
-                                    <th>CONVERSATION STARTED</th>
+                                    <th>ROLE</th>
                                     <th>ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {data.map((convo, index) => {
                                     return (
-                                        <tr key={convo._id} className={`${!convo.message[convo.message.length - 1].Read.isRead && convo.message[convo.message.length - 1].sender._id !== loggedInUserId? 'table-info': ''}`}>
+                                        <tr key={convo._id} className={`${!convo.message[convo.message.length - 1].Read.isRead && convo.message[convo.message.length - 1].sender._id !== loggedInUserId ? 'table-info' : ''}`}>
                                             <td>{index + 1}</td> {/* Display a row number */}
                                             <td>{convo.itemrequest.item.ItemName}</td>
-                                            <td>{convo.itemrequest.owner.firstname} {convo.itemrequest.owner.lastname}</td>
+                                            <td>
+                                                {convo.participants.map((participant) => (
+                                                    loggedInUserId !== participant._id && (
+                                                        <span key={participant._id}>
+                                                            {participant.firstname} {participant.lastname}
+                                                        </span>
+                                                    )
+                                                ))}
+                                            </td>
                                             <td>{formatDateToCustomFormat(convo.itemrequest.item.createdAt)}</td>
-                                            <td>{formatDateToCustomFormat(convo.createdAt)}</td>
+                                            <td>
+                                                {convo.participants.map((participant) => (
+                                                    loggedInUserId !== participant._id && (
+                                                        <span key={participant._id}>
+                                                            {participant.role}
+                                                        </span>
+                                                    )
+                                                ))}
+                                            </td>
                                             <td className="d-flex justify-content-center">
                                                 <UncontrolledDropdown>
                                                     <DropdownToggle
