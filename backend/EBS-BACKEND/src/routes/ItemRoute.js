@@ -9,7 +9,7 @@ const { addItem,ReviewRequest,deleteItem,getItems,getOneItem,updateItem,EBSRevie
 
 
 router.post("/save", checkAuthentication, checkSTAFFAuthorization,uploadDocument, addItem)
-router.post("/approve", checkAuthentication, checkApproversAuthorization, ReviewRequest,acceptPayment)
+router.post("/approve", checkAuthentication, checkApproversAuthorization,acceptPayment)
 router.post("/ebsapprove/:vendoritem", checkAuthentication, checkApproversAuthorization, EBSReviewRequest)
 router.post("/update", checkAuthentication, checkSTAFFAuthorization,uploadDocument, updateItem)
 router.delete("/delete/:id", checkAuthentication, checkSTAFFAuthorization, deleteItem)
@@ -19,8 +19,8 @@ router.get("/get/:id", checkAuthentication, getOneItem);
 router.get("/statistics",checkAuthentication,checkSTAFFAuthorization,itemStatistics)
 router.get("/ebsstatistics",checkAuthentication,checkEBSAuthorization,CountDocumentsByEBSpproval)
 router.get("/financestatistics",checkAuthentication,checkFINANCEAuthorization,CountDocumentsByFinanceApproval)
-router.get("/processfailure/:invoice/:item", ReviewRequest,processFailureInfo)
-router.get("/processsuccess/:vendoritem/:requestedBy/:financeApprovedBy/:EBSApprovedBy", processSuccessInfo);
+router.get("/processfailure/:item", ReviewRequest,processFailureInfo)
+router.get("/processsuccess/:vendoritem/:requestedBy/:financeApprovedBy/:EBSApprovedBy/:item", processSuccessInfo);
 
 
 module.exports = router

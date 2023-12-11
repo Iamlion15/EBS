@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalHeader } from "reactstrap";
 import GeneratePDF from "@/helpers/pdf";
 import axios from "axios";
+import FinanceGeneratePDF from "@/helpers/financePDF";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
 
 
@@ -36,56 +37,6 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
     }
     const findDocuments = async () => {
         const userRole = JSON.parse(localStorage.getItem("loggedInUser")).role
-        // if (category === "Reviewed") {
-        //     const config = {
-        //         headers: {
-        //             'Content-Type': "application/json",
-        //             'Authorization': JSON.parse(localStorage.getItem("token"))
-        //         }
-        //     }
-        //     try {
-        //         const response = await axios.post("http://localhost:5000/api/document/countdocumentsinrange", dateRange, config);
-        //         setCount(response.data.count)
-        //         // setData(response.documents)
-        //         setDocument(response.data.documents)
-        //         if (response.data.count !== 0) {
-        //             setActivateConfirm(true)
-        //             const rol = JSON.parse(localStorage.getItem("user")).role
-        //             const usernam = JSON.parse(localStorage.getItem("user")).username
-        //             if (rol === "RAB") {
-        //                 setPrintData({
-        //                     role: rol,
-        //                     username: usernam,
-        //                     disclaimerText: "Authority is hereby granted by Rwanda Agriculture Board(RAB) the management authority of RAB"
-        //                 })
-        //             }
-        //             else if (rol === "RSB") {
-        //                 setPrintData({
-        //                     role: rol,
-        //                     username: usernam,
-        //                     disclaimerText: "Authority is hereby granted by Rwanda Standard Board(RAB) the management authority of RSB"
-        //                 })
-        //             }
-        //             else {
-        //                 if (rol === "RICA") {
-        //                     setPrintData({
-        //                         role: rol,
-        //                         username: usernam,
-        //                         disclaimerText: "Authority is hereby granted by Rwanda Insepctorate Authority(RICA) the management authority of RICA"
-        //                     })
-        //                 }
-        //             }
-        //             setData(response.data.documents)
-        //         }
-        //         else {
-        //             setActivateConfirm(false)
-        //         }
-        //         console.log(response.data);
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // }
-        // else {
         if (category === "Pending") {
             const config = {
                 headers: {
@@ -145,7 +96,7 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
     
                             }
                             else {
-                                GeneratePDF(response.data.items, printData)
+                                FinanceGeneratePDF(response.data.items, printData)
                             }
                         }
                     }

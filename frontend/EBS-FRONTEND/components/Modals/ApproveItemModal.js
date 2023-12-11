@@ -6,11 +6,6 @@ import Router from "next/router";
 const ApproveItemModal = ({ modalIsOpen, toggleModal, data,setData, confirmHandler }) => {
     const [activateConfrim, setActivateConfirm] = useState(false);
     const [activateVendorDetails, setActivateVendorDetails] = useState(false)
-    const [activateVendorPhone, setActivateVendorPhone] = useState(false)
-    const [defaultNumber, setDefaultNumber] = useState(true)
-    const [validatePhone,setValidatePhone]=useState(false)
-    const [oldNumber,setOldNumber]=useState('')
-    const [count,setCount]=useState(0)
     const handleInput = (e) => {
         const input = e.target.value
         if (input === data.ItemName) {
@@ -20,39 +15,9 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data,setData, confirmHandl
             setActivateVendorDetails(false)
         }
     }
-    const toggleDefaultNumber = () => {
-        setDefaultNumber(!defaultNumber)
+    const toggleActivatePay=()=>{
+        setActivateConfirm(true)
     }
-    const toggleActivateVendorPhone=()=>{
-        setActivateVendorPhone(true)
-    }
-    const handlePhoneNumberInputChange=(e)=>{
-        const value=e.target.value;
-        setData({...data,vendorPhone:value})
-        CheckIfPhoneIsValid(value)
-    }
-    const CheckIfPhoneIsValid=(phone)=>{
-        if(phone.length ===10){
-            setValidatePhone(true)
-            setActivateConfirm(true)
-        }
-        else{
-            setValidatePhone(false)
-            setActivateConfirm(false)
-        }
-    }
-    useEffect(()=>{
-        CheckIfPhoneIsValid(data.vendorPhone)
-        if(count !==0){
-            if(!defaultNumber){
-                setData({...data,vendorPhone:oldNumber})
-            }
-        }
-        setCount(count+1)
-    },[defaultNumber])
-    useEffect(()=>{
-        setOldNumber(data.vendorPhone)
-    },[])
     return (
         <Modal isOpen={modalIsOpen} toggle={() => toggleModal()} className="d-flex align-items-center justify-content-center font-monospace" size='md'>
             <div>
@@ -95,22 +60,7 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data,setData, confirmHandl
                             </div>
                         </table>
                         <div className="mt-0 mx-3">
-                            <button className="btn btn-primary btn-sm" onClick={toggleActivateVendorPhone}>Proceed</button>
-                        </div>
-                    </div>)}
-                    {activateVendorPhone && (<div>
-                        <div className="mt-0 mx-3 mt-2">
-                            <div className="d-flex flex-flow">
-                                <div>
-                                    <input className="form-check-input" type="checkbox" value="" id="default" onClick={toggleDefaultNumber} checked={defaultNumber} />
-                                    <label className="form-check-label mx-1" for="default">
-                                        {defaultNumber ? <p> Default number</p> : <p> New number</p>}
-                                    </label>
-                                </div>
-                                <div>
-                                    <input type="text" className={`form-control mx-2 ${validatePhone? "is-valid":"is-invalid"}`} value={data.vendorPhone} disabled={defaultNumber} onChange={handlePhoneNumberInputChange}/>
-                                </div>
-                            </div>
+                            <button className="btn btn-primary btn-sm" onClick={toggleActivatePay}>Proceed</button>
                         </div>
                     </div>)}
                     <div className="d-flex justify-content-end m-4">

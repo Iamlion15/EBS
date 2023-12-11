@@ -6,7 +6,7 @@ const invoiceModel = require("../model/invoiceModel")
 const path = require("path")
 const sendMail = require("../helpers/MailConfig")
 const stripe = require('stripe')(process.env.STRIPE_KEY)
-const completePayment = require("../helpers/stripePay")
+
 
 
 
@@ -124,7 +124,6 @@ exports.deleteItem = async (req, res) => {
 }
 exports.ReviewRequest = async (req, res, next) => {
     try {
-        console.lo
         const item = await itemRequestModel.findOne({ _id: req.body.id });
         if (!item) {
             return res.status(404).json({ message: 'item not found' });
@@ -146,6 +145,10 @@ exports.ReviewRequest = async (req, res, next) => {
 
 exports.acceptPayment = async (req, res) => {
     try {
+        const item = await itemRequestModel.findOne({ _id: req.body.id });
+        if (!item) {
+            return res.status(404).json({ message: 'item not found' });
+        }
         const session = await stripe.checkout.sessions.create({
             line_items: [
                 {
@@ -161,10 +164,10 @@ exports.acceptPayment = async (req, res) => {
             ],
             mode: 'payment',
             payment_method_types: ['card'],
-            success_url: `http://localhost:4000/api/item/processsuccess/${req.body.vendoritemid}/${req.body.requestedBy}/${req.user._id}/${req.body.EBSapproved}`,
-            cancel_url: 'http://localhost:4000/item/processfailure',
+            success_url: `http://localhost:4000/api/item/processsuccess/${req.body.vendoritemid}/${req.body.requestedBy}/${req.user._id}/${req.body.EBSapproved}/${req.body.id}`,
+            cancel_url: `http://localhost:4000/item/processfailure/${req.body.id}`,
         });
-        
+
         res.status(200).json({ url: session.url });
     } catch (error) {
         console.error('Error creating payment session:', error);
@@ -173,21 +176,14 @@ exports.acceptPayment = async (req, res) => {
 };
 
 exports.processFailureInfo = async (req, res) => {
-    const invoiceid = req.params.invoice
-    const itemid = req.params.item
     try {
-        const item = await itemRequestModel.findOne({ _id: itemid })
-        item.Finance_Approval.approved = false
-        await item.save();
-        await invoiceModel.findOneAndDelete({ _id: invoiceid })
-        res.redirect('http://localhost:3000/FINANCE')
+        res.redirect('http://localhost:3000/FINANCE?status=failure')
     } catch (error) {
         res.status(400).json(error)
     }
 }
 
 exports.processSuccessInfo = async (req, res) => {
-    console.log("hello");
     try {
         const invoice = new invoiceModel({
             vendoritem: req.params.vendoritem,
@@ -195,12 +191,20 @@ exports.processSuccessInfo = async (req, res) => {
             financeApprovedBy: req.params.financeApprovedBy,
             EBSApprovedBy: req.params.EBSApprovedBy
         })
-        const invoiceid = await invoice.save()
-        res.redirect('http://localhost:3000/FINANCE')
+        const item = await itemRequestModel.findOne({ _id: req.params.item });
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        item.Finance_Approval.approved = true
+        item.Finance_Approval.timeOfApproval = formattedDate
+        await item.save();
+        await invoice.save()
+        res.redirect('http://localhost:3000/FINANCE?status=success')
     } catch (error) {
-        res.redirect('http://localhost:3000/EBS')
+        console.log(error);
     }
-
 }
 
 
