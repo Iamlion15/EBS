@@ -139,11 +139,11 @@ const HeaderComponent = ({ page, logout }) => {
                                     <p className='mx-3 my-0 py-0 text-muted'>Change password</p>
                                 </div>
                             </DropdownItem>
-                            {(user.role === "RAB" || user.role === "RSB" || user.role === "RICA") && (
+                            {(user.role === "FINANCE" || user.role === "EBS") && (
                                 <DropdownItem onClick={toggleReportModal}>
                                     <div className='d-flex flex-row'>
                                         <i class="bi bi-pencil-fill"></i>
-                                        <p className='mx-3 my-0 py-0 text-muted'>Review report</p>
+                                        <p className='mx-3 my-0 py-0 text-muted'>Reporting</p>
                                     </div>
                                 </DropdownItem>
                             )}

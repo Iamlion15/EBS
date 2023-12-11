@@ -6,21 +6,19 @@ import formatDateToCustomFormat from "@/helpers/dateFormatter";
 
 
 const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
-    const [activateConfrim, setActivateConfirm] = useState(false);
     const [dateRange, setDateRange] = useState({
         startDate: "",
         endDate: "",
         role: ""
-    });
-    const [data,setData]=useState([]);
-    const [printData,setPrintData]=useState({
-        role:"",
-        username:"",
-        disclaimerText:""
+    })
+    const [printData, setPrintData] = useState({
+        role: "",
+        username: "",
+        title: "",
+        startDate: "",
+        endDate: ""
     })
     const [document, setDocument] = useState([])
-    const [count, setCount] = useState("")
-    const [allDates, setAllDates] = useState(false)
     const [activateDateChooser, setActivateDateChooser] = useState(false)
     const [category, setCategory] = useState("")
     const handleSelectChange = (e) => {
@@ -36,22 +34,59 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
             console.log("activate", !activateDateChooser);
         }
     }
-    const toggleAllDates = (e) => {
-        e.preventDefault();
-        setAllDates(!allDates)
-    }
-    const dateHandler = async (e) => {
-        const date = e.target.value;
-        const role = JSON.parse(localStorage.getItem("user")).role
-        setDateRange({ ...dateRange, endDate: date, organisation: role });
-    };
-
-    useEffect(() => {
-        findDocuments();
-    }, [dateRange.endDate]);
-
     const findDocuments = async () => {
-        if (category === "Reviewed") {
+        const userRole = JSON.parse(localStorage.getItem("loggedInUser")).role
+        // if (category === "Reviewed") {
+        //     const config = {
+        //         headers: {
+        //             'Content-Type': "application/json",
+        //             'Authorization': JSON.parse(localStorage.getItem("token"))
+        //         }
+        //     }
+        //     try {
+        //         const response = await axios.post("http://localhost:5000/api/document/countdocumentsinrange", dateRange, config);
+        //         setCount(response.data.count)
+        //         // setData(response.documents)
+        //         setDocument(response.data.documents)
+        //         if (response.data.count !== 0) {
+        //             setActivateConfirm(true)
+        //             const rol = JSON.parse(localStorage.getItem("user")).role
+        //             const usernam = JSON.parse(localStorage.getItem("user")).username
+        //             if (rol === "RAB") {
+        //                 setPrintData({
+        //                     role: rol,
+        //                     username: usernam,
+        //                     disclaimerText: "Authority is hereby granted by Rwanda Agriculture Board(RAB) the management authority of RAB"
+        //                 })
+        //             }
+        //             else if (rol === "RSB") {
+        //                 setPrintData({
+        //                     role: rol,
+        //                     username: usernam,
+        //                     disclaimerText: "Authority is hereby granted by Rwanda Standard Board(RAB) the management authority of RSB"
+        //                 })
+        //             }
+        //             else {
+        //                 if (rol === "RICA") {
+        //                     setPrintData({
+        //                         role: rol,
+        //                         username: usernam,
+        //                         disclaimerText: "Authority is hereby granted by Rwanda Insepctorate Authority(RICA) the management authority of RICA"
+        //                     })
+        //                 }
+        //             }
+        //             setData(response.data.documents)
+        //         }
+        //         else {
+        //             setActivateConfirm(false)
+        //         }
+        //         console.log(response.data);
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
+        // else {
+        if (category === "Pending") {
             const config = {
                 headers: {
                     'Content-Type': "application/json",
@@ -59,49 +94,33 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
                 }
             }
             try {
-                const response = await axios.post("http://localhost:5000/api/document/countdocumentsinrange", dateRange, config);
-                setCount(response.data.count)
-                // setData(response.documents)
-                setDocument(response.data.documents)
-                if (response.data.count !== 0) {
-                    setActivateConfirm(true)
-                    const rol = JSON.parse(localStorage.getItem("user")).role
-                    const usernam=JSON.parse(localStorage.getItem("user")).username
-                    if(rol==="RAB"){
-                        setPrintData({
-                            role:rol,
-                            username:usernam,
-                        disclaimerText:"Authority is hereby granted by Rwanda Agriculture Board(RAB) the management authority of RAB"                            
-                        })
+                if (userRole === "EBS") {
+                    const response = await axios.post("http://localhost:4000/api/report/ebs/pendingreport", dateRange, config);
+                    console.log(response.data)
+                    if (response.data.items.length === 0) {
+
                     }
-                    else if(rol==="RSB"){
-                        setPrintData({
-                            role:rol,
-                            username:usernam,
-                        disclaimerText:"Authority is hereby granted by Rwanda Standard Board(RAB) the management authority of RSB"                            
-                        })
+                    else {
+                        GeneratePDF(response.data.items, printData)
                     }
-                    else{
-                        if(rol==="RICA"){
-                            setPrintData({
-                                role:rol,
-                                username:usernam,
-                            disclaimerText:"Authority is hereby granted by Rwanda Insepctorate Authority(RICA) the management authority of RICA"                            
-                            })
-                        }
-                    }
-                    setData(response.data.documents)
                 }
                 else {
-                    setActivateConfirm(false)
+                    if (userRole === "FINANCE") {
+                        const response = await axios.post("http://localhost:4000/api/report/finance/pendingreport", dateRange, config);
+                        if (response.data.items.length === 0) {
+
+                        }
+                        else {
+                            GeneratePDF(response.data.items, printData)
+                        }
+                    }
                 }
-                console.log(response.data);
             } catch (error) {
                 console.log(error);
             }
         }
-        else {
-            if (category === "Pending") {
+        else{
+            if (category === "Reviewed") {
                 const config = {
                     headers: {
                         'Content-Type': "application/json",
@@ -109,25 +128,48 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
                     }
                 }
                 try {
-                    const response = await axios.post("http://localhost:5000/api/document/countpendingdocumentsinrange", dateRange, config);
-                    setCount(response.data.count)
-                    
-                    if (response.data.count !== 0) {
-                        setActivateConfirm(true)
-                        setData(response.data.documents)
+                    if (userRole === "EBS") {
+                        const response = await axios.post("http://localhost:4000/api/report/ebs/approvedreport", dateRange, config);
+                        console.log(response.data)
+                        if (response.data.items.length === 0) {
+    
+                        }
+                        else {
+                            GeneratePDF(response.data.items, printData)
+                        }
                     }
                     else {
-                        setActivateConfirm(false)
+                        if (userRole === "FINANCE") {
+                            const response = await axios.post("http://localhost:4000/api/report/finance/approvedreport", dateRange, config);
+                            if (response.data.items.length === 0) {
+    
+                            }
+                            else {
+                                GeneratePDF(response.data.items, printData)
+                            }
+                        }
                     }
-                    console.log(response.data)
                 } catch (error) {
                     console.log(error);
                 }
             }
+    
         }
 
     }
-    useEffect(async() => {
+    useEffect(() => {
+        const usernam = JSON.parse(localStorage.getItem("user")).username
+        const userRole = JSON.parse(localStorage.getItem("loggedInUser")).role
+                setPrintData({
+                    role: userRole,
+                    username: usernam,
+                    title: "PERIOD PENDING ITEM REPORT",
+                    startDate: dateRange.startDate,
+                    endDate: dateRange.endDate
+                })
+    }, [dateRange.endDate])
+
+    useEffect(async () => {
         setDateRange({ startDate: "", endDate: "" })
     }, [])
     return (
@@ -135,7 +177,7 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
             <div>
                 <ModalHeader>
                     <div className="m-2">
-                        <h4 className="text-primary">Detailed review report</h4>
+                        <h4 className="text-primary">Detailed item report</h4>
                     </div>
                 </ModalHeader>
                 <div>
@@ -148,8 +190,8 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
                                 <option value="Reviewed" selected={category === "Reviewed"}>Reviewed</option>
                             </select>
                         </div>
-                        <div className="d-flex flex-row">
-                            <div className="mx-2 mt-3">
+                        <div className="row">
+                            <div className="col mx-2 mt-3">
                                 <small className="d-block text-uppercase font-weight-bold mb-3">
                                     Start Date
                                 </small>
@@ -161,10 +203,10 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
                                     onChange={(e) =>
                                         setDateRange({ ...dateRange, startDate: e.target.value })
                                     }
-                                    disabled={!activateDateChooser || !allDates}
+                                    disabled={!activateDateChooser}
                                 />
                             </div>
-                            <div className="mx-3 mt-3">
+                            <div className="col mt-3 mx-2">
                                 <small className="d-block text-uppercase font-weight-bold mb-3">
                                     End Date
                                 </small>
@@ -173,41 +215,20 @@ const GenerateReportModal = ({ modalIsOpen, toggleModal, confirmHandler }) => {
                                     className="form-control"
                                     placeholder="Date Picker Here"
                                     value={dateRange.endDate}
-                                    onChange={dateHandler}
+                                    onChange={(e) =>
+                                        setDateRange({ ...dateRange, endDate: e.target.value })
+                                    }
                                     min={dateRange.startDate} // Set the minimum date based on Start Date
-                                    disabled={!dateRange.startDate || !activateDateChooser || !allDates} // Disable if Start Date is not filled
+                                    disabled={!dateRange.startDate} // Disable if Start Date is not filled
                                 />
-                            </div>
-                            <div className="flex-grow-0 mt-3">
-                                <small className="d-block text-uppercase font-weight-bold mb-3">
-                                    All dates
-                                </small>
-                                <button className={allDates ? "btn btn-sm btn-outline-primary" : "btn btn-sm btn-primary"} onClick={toggleAllDates}>
-                                    <div className="d-flex flex-row">
-                                        <div className="d-flex justify-content-center align-items-center">
-                                            <p>All Time</p>
-                                        </div>
-                                        {!allDates && (
-                                            <div className="d-flex justify-content-center align-items-center">
-                                                <i class="bi bi-check mx-2"></i>
-                                            </div>
-                                        )}
-                                    </div>
-                                </button>
-
                             </div>
                         </div>
                     </div>
                     <div className="row">
                         <div className="col">
-                            <div className=" d-flex justify-content-start m-4">
-                               <p> count : {count}</p>
-                            </div>
-                        </div>
-                        <div className="col">
                             <div className=" d-flex justify-content-end m-4">
                                 <button type="button" className="btn btn-light mx-4" onClick={() => toggleModal()}>Cancel</button>
-                                <button type="button" className={!activateConfrim ? "btn btn-light" : "btn btn-danger"} disabled={!activateConfrim} onClick={()=>GeneratePDF(data,printData)}>Print</button>
+                                <button type="button" className={!dateRange.endDate ? "btn btn-light" : "btn btn-danger"} disabled={!dateRange.endDate} onClick={findDocuments}>Generate</button>
                             </div>
                         </div>
                     </div>

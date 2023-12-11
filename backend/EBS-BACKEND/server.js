@@ -4,6 +4,7 @@ const userRoutes=require("./src/routes/userRoute")
 const ITEMRoutes=require("./src/routes/ItemRoute")
 const messageRoutes=require("./src/routes/messageRoutes")
 const vendorRoutes=require("./src/routes/vendorRoutes")
+const reportRoutes=require("./src/routes/reportRoutes")
 const dbConnect=require("./src/database/db")
 
 //configuring express
@@ -19,6 +20,7 @@ app.use("/api/user",userRoutes)
 app.use("/api/item",ITEMRoutes)
 app.use("/api/message",messageRoutes)
 app.use("/api/vendor",vendorRoutes)
+app.use("/api/report",reportRoutes)
 
 
 

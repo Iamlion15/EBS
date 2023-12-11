@@ -12,7 +12,6 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import ApproveItemModal from "@/components/Modals/ApproveItemModal";
 
-
 const MyRequests = () => {
     const [data, setData] = useState([])
     const [messageModal, setMessageModal] = useState(false)
@@ -21,21 +20,25 @@ const MyRequests = () => {
     const [details, setDetails] = useState({})
     const [approveData, setApproveData] = useState({
         id: "",
-        ItemName: "",
-        quantity: "",
+        ownerid: "",
         firstname: "",
         lastname: "",
-        reviewerFirstName:"",
-        reviewerLastName:"",
-        itemAssigned:"",
-        vendorName:"",
-        price:"",
+        ItemName: "",
+        itemid: "",
+        reviewerid: "",
+        reviewerFirstName: "",
+        reviewerLastName: "",
+        vendoritemid: "",
+        itemAssigned: "",
+        price: "",
+        vendorPhone: "",
+        vendorEmail: "",
     })
-    const [messageData,setMessageData]=useState({
-        receiver:"",
-        firstname:"",
-        lastname:"",
-        ItemName:""
+    const [messageData, setMessageData] = useState({
+        receiver: "",
+        firstname: "",
+        lastname: "",
+        ItemName: ""
     })
     const toastId = useRef(null)
     const toggleApproveItemModal = () => {
@@ -53,10 +56,10 @@ const MyRequests = () => {
         }
         try {
             const response = await axios.get("http://localhost:4000/api/item/financegetall", config)
-            const financedata=[];
+            const financedata = [];
             console.log(response.data);
-            for(let i=0;i<response.data.length;i++){
-                if(response.data[i].EBS_Approval.approved===true && response.data[i].Finance_Approval.approved===false){
+            for (let i = 0; i < response.data.length; i++) {
+                if (response.data[i].EBS_Approval.approved === true && response.data[i].Finance_Approval.approved === false) {
                     financedata.push(response.data[i])
                 }
             }
@@ -68,37 +71,41 @@ const MyRequests = () => {
     const showMessageModal = (info) => {
         console.log(info);
         setMessageData({
-            receiver:info.reviewer,
-            firstname:info.owner.firstname,
-            lastname:info.owner.lastname,
-            ItemName:info.item.ItemName,
-            itemId:info._id
+            receiver: info.reviewer,
+            firstname: info.owner.firstname,
+            lastname: info.owner.lastname,
+            ItemName: info.item.ItemName,
+            itemId: info._id
         })
         setMessageModal(true)
     }
     const showApproveItem = (requestedItem) => {
         setApproveData({
             id: requestedItem._id,
-            ownerid:requestedItem.owner._id,
+            ownerid: requestedItem.owner._id,
             firstname: requestedItem.owner.firstname,
             lastname: requestedItem.owner.lastname,
             ItemName: requestedItem.item.ItemName,
-            itemid:requestedItem.item._id,
-            reviewerid:requestedItem.reviewer._id,
-            reviewerFirstName:requestedItem.reviewer.firstname,
-            reviewerLastName:requestedItem.reviewer.lastname,
-            vendoritemid:requestedItem.vendoritem._id,
-            itemAssigned:requestedItem.vendoritem.itemName,
-            price:requestedItem.vendoritem.itemPrice,
-            vendorPhone:requestedItem.vendoritem.owner.phone,
-            vendorEmail:requestedItem.vendoritem.owner.email,
+            itemid: requestedItem.item._id,
+            reviewerid: requestedItem.reviewer._id,
+            reviewerFirstName: requestedItem.reviewer.firstname,
+            reviewerLastName: requestedItem.reviewer.lastname,
+            vendoritemid: requestedItem.vendoritem._id,
+            itemAssigned: requestedItem.vendoritem.itemName,
+            price: requestedItem.vendoritem.itemPrice,
+            vendorPhone: requestedItem.vendoritem.owner.phone,
+            vendorEmail: requestedItem.vendoritem.owner.email,
         })
         setViewItemApprove(true)
     }
-    const confirmHandler = async (approveData) => {
-        const confirmData={
-            id:approveData.id,
-            reviewer:"FINANCE"
+    const confirmHandler = async () => {
+        const confirmData = {
+            id: approveData.id,
+            vendoritemid: approveData.vendoritemid,
+            requestedBy: approveData.ownerid,
+            EBSapproved: approveData.reviewerid,
+            price: approveData.price,
+            ItemName: approveData.ItemName
         }
         toastId.current = toast.info("Loading............", {
             position: toast.POSITION.TOP_LEFT,
@@ -111,10 +118,10 @@ const MyRequests = () => {
             }
         }
         try {
-            const response = await axios.post('http://localhost:4000/api/item/approve',confirmData, config)
+            const response = await axios.post('http://localhost:4000/api/item/approve', confirmData, config)
             toast.update(toastId.current, { render: "Successfully sent data", type: toast.TYPE.SUCCESS, autoClose: 2000 })
             toggleApproveItemModal()
-
+            window.location.href = response.data.url;
         } catch (error) {
             console.log(error)
             toast.update(toastId.current, { render: "Failure", type: toast.TYPE.ERROR, autoClose: 2000 })
@@ -170,7 +177,7 @@ const MyRequests = () => {
                                                                 onClick={() => showApproveItem(items)}
                                                             >
                                                                 <div className='d-flex flex-row'>
-                                                                <i class="bi bi-pencil-square"></i>
+                                                                    <i class="bi bi-pencil-square"></i>
                                                                     <p className='mx-3 my-0 py-0'>Review request</p>
                                                                 </div>
                                                             </DropdownItem>
@@ -178,7 +185,7 @@ const MyRequests = () => {
                                                                 onClick={() => showMessageModal(items)}
                                                             >
                                                                 <div className='d-flex flex-row'>
-                                                                <i class="bi bi-chat-left-dots-fill"></i>
+                                                                    <i class="bi bi-chat-left-dots-fill"></i>
                                                                     <p className='mx-3 my-0 py-0 text-muted'>More information</p>
                                                                 </div>
                                                             </DropdownItem>

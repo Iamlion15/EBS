@@ -2,8 +2,11 @@ const itemModel = require("../model/ItemModel")
 const itemRequestModel = require("../model/ItemRequest")
 const vendorItemModel = require("../model/vendorItems")
 const vendorModel = require("../model/vendorModel")
+const invoiceModel = require("../model/invoiceModel")
 const path = require("path")
 const sendMail = require("../helpers/MailConfig")
+const stripe = require('stripe')(process.env.STRIPE_KEY)
+const completePayment = require("../helpers/stripePay")
 
 
 
@@ -81,14 +84,14 @@ exports.getItems = async (req, res) => {
 exports.getFinanceItems = async (req, res) => {
     try {
         const items = await itemRequestModel.find().populate("item").populate("owner").populate("reviewer").
-        populate({
-            path:"vendoritem",
-            model:"vendoritem",
-            populate:{
-                path:"owner",
-                model:"vendor"
-            }
-        });
+            populate({
+                path: "vendoritem",
+                model: "vendoritem",
+                populate: {
+                    path: "owner",
+                    model: "vendor"
+                }
+            });
         res.status(200).json(items)
     } catch (err) {
         res.status(400).json({ error: err })
@@ -119,9 +122,9 @@ exports.deleteItem = async (req, res) => {
         res.status(400).json({ error: err })
     }
 }
-exports.ReviewRequest = async (req, res) => {
+exports.ReviewRequest = async (req, res, next) => {
     try {
-        const reviewer = req.body.reviewer;
+        console.lo
         const item = await itemRequestModel.findOne({ _id: req.body.id });
         if (!item) {
             return res.status(404).json({ message: 'item not found' });
@@ -134,13 +137,71 @@ exports.ReviewRequest = async (req, res) => {
         item.Finance_Approval.approved = true
         item.Finance_Approval.timeOfApproval = formattedDate
         await item.save();
-        res.status(200).json({ message: "Successfully reviewed item" });
+        next();
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: 'Server error' });
     }
 }
 
+exports.acceptPayment = async (req, res) => {
+    try {
+        const session = await stripe.checkout.sessions.create({
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'rwf',
+                        product_data: {
+                            name: req.body.ItemName,
+                        },
+                        unit_amount: req.body.price,
+                    },
+                    quantity: 1,
+                },
+            ],
+            mode: 'payment',
+            payment_method_types: ['card'],
+            success_url: `http://localhost:4000/api/item/processsuccess/${req.body.vendoritemid}/${req.body.requestedBy}/${req.user._id}/${req.body.EBSapproved}`,
+            cancel_url: 'http://localhost:4000/item/processfailure',
+        });
+        
+        res.status(200).json({ url: session.url });
+    } catch (error) {
+        console.error('Error creating payment session:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+exports.processFailureInfo = async (req, res) => {
+    const invoiceid = req.params.invoice
+    const itemid = req.params.item
+    try {
+        const item = await itemRequestModel.findOne({ _id: itemid })
+        item.Finance_Approval.approved = false
+        await item.save();
+        await invoiceModel.findOneAndDelete({ _id: invoiceid })
+        res.redirect('http://localhost:3000/FINANCE')
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
+
+exports.processSuccessInfo = async (req, res) => {
+    console.log("hello");
+    try {
+        const invoice = new invoiceModel({
+            vendoritem: req.params.vendoritem,
+            requestedBy: req.params.requestedBy,
+            financeApprovedBy: req.params.financeApprovedBy,
+            EBSApprovedBy: req.params.EBSApprovedBy
+        })
+        const invoiceid = await invoice.save()
+        res.redirect('http://localhost:3000/FINANCE')
+    } catch (error) {
+        res.redirect('http://localhost:3000/EBS')
+    }
+
+}
 
 
 exports.EBSReviewRequest = async (req, res) => {
@@ -161,7 +222,7 @@ exports.EBSReviewRequest = async (req, res) => {
         item.EBS_Approval.approved = true
         item.EBS_Approval.timeOfApproval = formattedDate
         item.vendoritem = vendor
-        item.reviewer=reviewer._id;
+        item.reviewer = reviewer._id;
         const vendorName = vendor_owner.firstname + " " + vendor_owner.lastname
         const deliveryDetails = vendor_item.itemName
         await sendMail(vendor_owner.email, vendorName, deliveryDetails)
