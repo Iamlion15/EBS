@@ -111,7 +111,7 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
                                 value={selectedItemValue}
                                 onChange={handleSelectVendorItemChange}
                             >
-                                <option value="" disabled>Select a vendor</option>
+                                <option value="" disabled>Select an item</option>
                                 {vendorItems.map((vendoritem) => (
                                     <option key={vendoritem._id} value={vendoritem._id}>
                                     {vendoritem.itemName} -- {vendoritem.itemPrice} RWF

@@ -1,5 +1,5 @@
 const express=require("express")
-const {getVendors,deleteVendor,deleteVendorItem,saveVendor,saveVendorItem,updateVendor,updateVendorItem,getVendorItems,updateVendorContract}=require("../controller/vendorController")
+const {getVendors,deleteVendor,deleteVendorItem,saveVendor,saveVendorItem,updateVendor,updateVendorItem,getVendorItems,updateVendorContract,terminateVendorContract}=require("../controller/vendorController")
 const checkAuthentication=require("../middlewares/checkAuthentication")
 const uploadDocument = require("../middlewares/uploadDocument")
 const {checkVendorContracts}=require("../controller/statisticsController")
@@ -17,6 +17,7 @@ router.get("/vendors",checkAuthentication,checkEBSAuthorization,getVendors)
 router.get("/vendoritems/:vendor",checkAuthentication,checkEBSAuthorization,getVendorItems)
 router.get("/checkvendorcontract",checkAuthentication,checkEBSAuthorization,checkVendorContracts)
 router.post("/updatecontract",checkAuthentication,checkEBSAuthorization,updateVendorContract)
+router.post("/terminate/:vendor",checkAuthentication,checkEBSAuthorization,uploadDocument,terminateVendorContract)
 
 
 module.exports=router;

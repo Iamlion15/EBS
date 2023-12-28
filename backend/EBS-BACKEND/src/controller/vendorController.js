@@ -1,6 +1,7 @@
 const vendorModel = require("../model/vendorModel")
 const vendorItems = require("../model/vendorItems")
 const path = require("path")
+const contractTerminationEmail=require("../helpers/contractTerminationEmail")
 
 
 exports.saveVendor = async (req, res) => {
@@ -142,4 +143,24 @@ exports.updateVendorContract = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+exports.terminateVendorContract=async(req,res)=>{
+    let fileLocation;
+    if (req.file) {
+        fileLocation = path.resolve(req.file.path)
+    } else {
+        return res.status(400).json({ error: 'No file was uploaded' });
+    }
+    try {
+        const vendorid=req.params.vendor;
+        const vendor=await vendorModel.findOne({_id:vendorid})
+        const vendoritem=await vendorItems.findOneAndDelete({owner:vendorid})
+        await vendorModel.findOneAndDelete({_id:vendor})
+        const vendorName = vendor.firstname + " " + vendor.lastname
+        await contractTerminationEmail(vendor.email, vendorName, fileLocation)
+        res.status(200).json({"message":"successfull"})
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
 

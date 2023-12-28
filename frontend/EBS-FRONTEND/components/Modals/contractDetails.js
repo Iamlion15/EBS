@@ -3,7 +3,6 @@ import { Modal, ModalFooter } from "reactstrap";
 
 
 const ContractDetailModal = ({ modalIsOpen, toggleModal, contractData,setContractData }) => {
-    // console.log(contractData);
     const [checkEmpty, setCheckEmpty] = useState(false);
     const addInfo=(e)=>{
         e.preventDefault();

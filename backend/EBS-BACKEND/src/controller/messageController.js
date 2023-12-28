@@ -9,7 +9,7 @@ exports.sendMessage = async (req, res) => {
         const senderId = req.user.id;
         const recipientId = req.body.receiver;
         const existingChat = await ChatModel.findOne({
-            participants: { $all: [senderId, recipientId] },
+            participants: { $all: [senderId, recipientId] },itemrequest: req.body.itemId,
         });
 
         if (existingChat) {

@@ -7,6 +7,7 @@ import MyRequests from "./myRequests";
 import Dashboard from "./dashboard";
 import Logout from "@/helpers/logout";
 import Feedback from "./feedBacks";
+import ApprovedRequests from "./approvedItem";
 
 const Index = () => {
     const [page, setPage] = useState("Dashboard")
@@ -32,6 +33,9 @@ const Index = () => {
                         )}
                         {page === 'Feedback' && (
                             <Feedback />
+                        )}
+                         {page === 'Approved Item' && (
+                            <ApprovedRequests />
                         )}
                     </div>
                 </div>

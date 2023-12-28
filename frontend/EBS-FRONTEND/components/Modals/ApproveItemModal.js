@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalHeader } from "reactstrap";
-import Router from "next/router";
 
 
 const ApproveItemModal = ({ modalIsOpen, toggleModal, data,setData, confirmHandler }) => {

@@ -25,7 +25,12 @@ const itemRequestSchema=new mongoose.Schema({
     reviewer:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "user"
-    }
+    },
+    status:{
+        type:String,
+        default:"Pending",
+        enum:["Pending","Approved"]
+    },
 },{timestamps:true})
 
 const itemRequestModel=mongoose.model("itemrequest",itemRequestSchema)

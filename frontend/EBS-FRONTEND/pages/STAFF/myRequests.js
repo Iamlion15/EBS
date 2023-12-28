@@ -7,7 +7,6 @@ import {
 } from 'reactstrap';
 import axios from "axios";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
-import ViewApplication from "./viewApplication";
 import DeleteModal from "@/components/Modals/deleteModal";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,7 +16,7 @@ import UpdateItemModal from "@/components/Modals/updateItemModal";
 const MyRequests = () => {
     const [data, setData] = useState([])
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [deleteId,setDeleteId]=useState('')
+    const [deleteId, setDeleteId] = useState('')
     const [deleteModal, setDeleteModal] = useState(false)
     const [viewApp, setViewApp] = useState(false)
     const [viewItemUpdate, setViewItemUpdate] = useState(false)
@@ -38,7 +37,7 @@ const MyRequests = () => {
     const toggleUpdateItemModal = () => {
         setViewItemUpdate(!viewItemUpdate)
     }
-    const toggleDeleteModal=()=>{
+    const toggleDeleteModal = () => {
         setDeleteModal(!deleteModal)
     }
     useEffect(async () => {
@@ -52,26 +51,31 @@ const MyRequests = () => {
             const response = await axios.get("http://localhost:4000/api/item/getall", config)
             console.log(response.data);
             setData(response.data)
+            const pendingData = [];
+            for (let i = 0; i < response.data.length; i++) {
+                if (response.data[i].status === "Pending") {
+                    pendingData.push(response.data[i])
+                }
+            }
+            setData(pendingData)
         } catch (error) {
             console.log(error)
         }
-    }, [viewItemUpdate,deleteModal])
+    }, [viewItemUpdate, deleteModal])
 
     const checkStatus = (ebsstatus, financestatus) => {
-        if (ebsstatus === "true" && financestatus === "true") {
-            return <span className="badge rounded-pill bg-success">Complete</span>;
-        } else if (ebsstatus === "true" && financestatus === "false") {
+        if (ebsstatus === "true" && financestatus === "false") {
             return <span className="badge rounded-pill bg-primary">Under review</span>;
         } else {
             return <span className="badge rounded-pill bg-warning text-dark">Pending</span>;
         }
     };
-    
+
     const switchView = (detail) => {
         setDetails(detail)
         setViewApp(true)
     }
-    const showDeleteModal=(id)=>{
+    const showDeleteModal = (id) => {
         setDeleteId(id)
         setDeleteModal(true)
     }
@@ -173,17 +177,18 @@ const MyRequests = () => {
                                                             <DropdownItem
                                                                 onClick={() => showUpdateItem(items)}
                                                             >
-                                                                update
-
+                                                                <div className='d-flex flex-row'>
+                                                                    <i class="bi bi-box-seam"></i>
+                                                                    <p className='mx-3 my-0 py-0 text-muted'>Update</p>
+                                                                </div>
                                                             </DropdownItem>
                                                             <DropdownItem
-                                                            onClick={()=>showDeleteModal(info._id)}
+                                                                onClick={() => showDeleteModal(items._id)}
                                                             >
-                                                                delete
-                                                            </DropdownItem>
-                                                            <DropdownItem
-                                                                onClick={() => switchView(info)}>
-                                                                View application
+                                                                <div className='d-flex flex-row'>
+                                                                <i class="bi bi-trash"></i>
+                                                                    <p className='mx-3 my-0 py-0 text-muted'>Delete</p>
+                                                                </div>
                                                             </DropdownItem>
                                                         </DropdownMenu>
                                                     </UncontrolledDropdown>
@@ -206,11 +211,11 @@ const MyRequests = () => {
                         />}
                     </div>
                     {deleteModal && (
-                        <DeleteModal 
-                        toggleModal={setDeleteModal}
-                        modalIsOpen={deleteModal}
-                        id={deleteId}
-                        ToastContainer={ToastContainer}
+                        <DeleteModal
+                            toggleModal={setDeleteModal}
+                            modalIsOpen={deleteModal}
+                            id={deleteId}
+                            ToastContainer={ToastContainer}
                         />
                     )}
                     <div>

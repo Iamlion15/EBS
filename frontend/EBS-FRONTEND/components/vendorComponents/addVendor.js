@@ -16,7 +16,11 @@ const AddVendor = ({ nextStep, data, setData }) => {
             nextStep()
         }
     }
-    const toggleModal=()=>{
+    const toggleModal=()=>{     
+        setModalIsOpen(!modalIsOpen)
+    }
+    const buttonToggleModal=(e)=>{
+        e.preventDefault();
         setModalIsOpen(!modalIsOpen)
     }
     const handleFileChange = (e) => {
@@ -77,7 +81,7 @@ const AddVendor = ({ nextStep, data, setData }) => {
                                 </div>
                             </div>
                             {showModifyContract&& (<div>
-                                <button className="btn btn-primary btn-sm" onClick={toggleModal}>Modify contract information</button>
+                                <button className="btn btn-primary btn-sm" onClick={buttonToggleModal}>Modify contract information</button>
                             </div>)}
                             </div>
                         </div>

@@ -60,27 +60,7 @@ const UpdateItemModal = ({ modalIsOpen, toggleModal, data, setData, updateHandle
                                 <label htmlFor="phone">Date when needed</label>
                             </div>
                         </div>
-                        <div className="col">
-                            <div>
-                                {showUpload && (<div className="input-group">
-                                    <input type="file" className="form-control" id="upload"
-                                        onChange={(e) => setData({
-                                            ...data,
-                                            fileLocation: e.target.files[0]
-                                        })} />
-                                </div>)}
-                                {!showUpload && (
-                                    <div className="d-flex flex-row" >
-                                        <i class="bi bi-filetype-pdf mx-3"></i>
-                                        <p className="text-secondary mx-4" style={{ textDecoration: 'underline' }} ><strong>Supporting document</strong></p>
-                                        <button className="btn btn-sm btn-warning" onClick={() => setShowUpload(true)}>remove</button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                    <div className="col-6">
+                        <div className="col-6">
                             <div class="form-floating">
                                 <select className="form-select" value={data.itemType} onChange={(e) => setData({ ...data, itemType: e.target.value })}>
                                     <option value="ELECTRONICS" selected={data.itemType === "ELECTRONIC"}>ELECTRONICS</option>
@@ -90,7 +70,6 @@ const UpdateItemModal = ({ modalIsOpen, toggleModal, data, setData, updateHandle
                                 <label for="choose">ITEM CATEGORY</label>
                             </div>
                         </div>
-                       
                     </div>
                     <ModalFooter className="m-4">
                         <button type="button" class="btn btn-outline-danger" onClick={() => toggleModal()}>Cancel</button>

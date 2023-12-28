@@ -25,6 +25,11 @@ const SidebarItems = {
                 icon: <i class="bi bi-chat-left-fill mx-2"></i>,
                 link: ""
             },
+            {
+                title: "Approved Item",
+                icon: <i class="bi bi-card-checklist mx-2"></i>,
+                link: ""
+            },
         ]
     },
     EBS: {

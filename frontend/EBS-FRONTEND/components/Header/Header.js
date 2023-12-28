@@ -17,6 +17,7 @@ import axios from "axios";
 const HeaderComponent = ({ page, logout }) => {
     const [user, setUser] = useState('')
     const [email, setEmail] = useState('')
+    const [terminateContractModal,setTerminateContractModal]=useState(false)
     const [data, setData] = useState({
         firstname: "",
         lastname: "",
@@ -92,7 +93,7 @@ const HeaderComponent = ({ page, logout }) => {
         } catch (error) {
             console.log(error);
         }
-    }, [page, renewContractModal])
+    }, [page, renewContractModal,terminateContractModal])
     return (
         <header className="border-bottom shadow font-monospace" style={{ width: "100%", backgroundColor: "#ffffff" }}>
             <div className="container pt-1">
@@ -183,6 +184,8 @@ const HeaderComponent = ({ page, logout }) => {
                         modalIsOpen={renewContractModal}
                         toggleModal={toggleRenewalModal}
                         contractData={contractDetails.contracts}
+                        terminateContractModal={terminateContractModal}
+                        setTerminateContractModal={setTerminateContractModal}
                     />}
                 </div>
             </div>

@@ -199,6 +199,7 @@ exports.processSuccessInfo = async (req, res) => {
         const formattedDate = `${year}-${month}-${day}`;
         item.Finance_Approval.approved = true
         item.Finance_Approval.timeOfApproval = formattedDate
+        item.status="Approved"
         await item.save();
         await invoice.save()
         res.redirect('http://localhost:3000/FINANCE?status=success')

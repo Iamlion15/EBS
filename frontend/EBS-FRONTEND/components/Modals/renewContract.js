@@ -3,10 +3,11 @@ import { Modal } from "reactstrap";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
 import { formatDateHTMLDATE } from "@/helpers/htmlFormDates";
 import RenewContractDates from "../vendorComponents/renewContractDates";
+import TerminateContract from "./terminateContractModal";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const RenewContract = ({ modalIsOpen, toggleModal, contractData, setContractData }) => {
+const RenewContract = ({ modalIsOpen, toggleModal, contractData, setContractData,terminateContractModal,setTerminateContractModal }) => {
     console.log(contractData);
     const [checkEmpty, setCheckEmpty] = useState(false);
     const [activateOperations, setActivateOperations] = useState(false)
@@ -18,6 +19,9 @@ const RenewContract = ({ modalIsOpen, toggleModal, contractData, setContractData
         endDate: ""
     })
     const toastId = useRef(null)
+    const toggleTerminateContract=()=>{
+        setTerminateContractModal(!terminateContractModal)
+    }
     const activateRow = (vendor) => {
         vendor.contract.startDate = formatDateHTMLDATE(vendor.contract.startDate)
         vendor.contract.endDate = formatDateHTMLDATE(vendor.contract.endDate)
@@ -32,6 +36,12 @@ const RenewContract = ({ modalIsOpen, toggleModal, contractData, setContractData
     const showRenewContractDatesView = (e) => {
         e.preventDefault();
         setRenewDates(!renewDates)
+    }
+    const showTerminateContract=(e)=>{
+        e.preventDefault()
+        console.log(selectedRow);
+        setTerminateContractModal(true)
+
     }
     const addInfo = (e) => {
         e.preventDefault();
@@ -106,7 +116,7 @@ const RenewContract = ({ modalIsOpen, toggleModal, contractData, setContractData
                 {!renewDates ? (<div className="row my-2">
                     <div className="col-6">
                         {activateOperations && (<div className="d-flex justify-content-start">
-                            <button type="button" class="btn btn-danger mx-2" onClick={addInfo}>Terminate</button>
+                            <button type="button" class="btn btn-danger mx-2" onClick={showTerminateContract}>Terminate</button>
                             <button type="button" class="btn btn-primary" onClick={showRenewContractDatesView}>Renew</button>
                         </div>)}
                     </div>
@@ -128,6 +138,11 @@ const RenewContract = ({ modalIsOpen, toggleModal, contractData, setContractData
                             </div>
                         </div>
                     </div>
+                )}
+            </div>
+            <div>
+                {terminateContractModal&&(
+                    <TerminateContract modalIsOpen={terminateContractModal} toggleModal={toggleTerminateContract} selectedRow={selectedRow} toggleParentModal={toggleModal}/>
                 )}
             </div>
         </Modal>

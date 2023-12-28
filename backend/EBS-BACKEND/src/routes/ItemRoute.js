@@ -19,7 +19,7 @@ router.get("/get/:id", checkAuthentication, getOneItem);
 router.get("/statistics",checkAuthentication,checkSTAFFAuthorization,itemStatistics)
 router.get("/ebsstatistics",checkAuthentication,checkEBSAuthorization,CountDocumentsByEBSpproval)
 router.get("/financestatistics",checkAuthentication,checkFINANCEAuthorization,CountDocumentsByFinanceApproval)
-router.get("/processfailure/:item", ReviewRequest,processFailureInfo)
+router.get("/processfailure", ReviewRequest,processFailureInfo)
 router.get("/processsuccess/:vendoritem/:requestedBy/:financeApprovedBy/:EBSApprovedBy/:item", processSuccessInfo);
 
 
