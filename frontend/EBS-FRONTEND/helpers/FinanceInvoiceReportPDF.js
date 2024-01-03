@@ -5,19 +5,14 @@ import formatDateToCustomFormat from './dateFormatter';
 import 'jspdf-autotable';
 
 const FinanceInvoiceGeneratePDF = (dataa,pData) => {
+  new jsPDF();
   const unit = 'mm';
   const size = 'a4';
   const orientation = 'portrait';
   const doc = new jsPDF(orientation, unit, size);
   const pageWidth = doc.internal.pageSize.getWidth();
   const imageSource = Logo.src;
-
-  // Assuming 'YourFontName' is the name of your custom font
-const fontFile = require('../public/fonts/js/Copperplate_Gothic_Bold_Regular-normal');
-const customFont = { MYFONT: fontFile };
-
-jsPDF.API.events.push(['addFont', 'MYFONT', customFont.MYFONT]);
-doc.setFont('MYFONT');
+  doc.setFont('CopperplateGothic', 'normal');
 
   // Logo in the top-left corner
   doc.addImage(imageSource, 'JPEG', 15, 0, 80, 55);
@@ -46,7 +41,7 @@ doc.setFont('MYFONT');
   // Date Period
   const datePeriod = `START DATE: ${pData.startDate}\n\nEND DATE: ${pData.endDate}\n\n`;
   const datePeriodLines = doc.splitTextToSize(datePeriod, pageWidth - 30);
-  doc.setFontSize(10);
+  doc.setFontSize(13);
   doc.text(datePeriodLines, 15, 75);
 
   // Line
@@ -72,7 +67,6 @@ doc.setFont('MYFONT');
 
  // Define a custom style for the total row
 const totalRowStyle = { fontStyle: 'bold', fillColor: [204, 204, 204], textColor: [0, 0, 0] };
-
 // Add the total row to printData with the specified style
 //const totalRow = ["Total Amount:", "", "", "", totalAmount+"RWF"];
 const totalRow = [{ content: "Total Amount:", styles: totalRowStyle }, "", "", "", totalAmount+" RWF"];

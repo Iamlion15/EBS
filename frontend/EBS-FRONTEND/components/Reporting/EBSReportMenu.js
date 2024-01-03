@@ -10,9 +10,9 @@ import {
   TabPane,
 } from "reactstrap";
 import ItemReportStatus from "./ItemstatusReport";
-import InvoiceReport from "./InvoiceReport";
+import VendorReport from "./vendorReport";
 
-const ReportMenu = ({ modalIsOpen, toggleModal, confirmHandler }) => {
+const EBSReportMenu = ({ modalIsOpen, toggleModal, confirmHandler }) => {
   const [activeTab, setActiveTab] = useState(1);
 
   const toggleTab = (tabIndex) => {
@@ -54,7 +54,7 @@ const ReportMenu = ({ modalIsOpen, toggleModal, confirmHandler }) => {
                 onClick={() => toggleTab(2)}
                 role="tab"
               >
-                Invoice Report
+                Vendor report
               </NavLink>
             </NavItem>
           </Nav>
@@ -68,7 +68,7 @@ const ReportMenu = ({ modalIsOpen, toggleModal, confirmHandler }) => {
             )}
             {activeTab === 2 && (
               <TabPane>
-                <InvoiceReport toggleModal={toggleModal}/>
+                <VendorReport toggleModal={toggleModal}/>
               </TabPane>
             )}
           </CardBody>
@@ -78,4 +78,4 @@ const ReportMenu = ({ modalIsOpen, toggleModal, confirmHandler }) => {
   );
 };
 
-export default ReportMenu;
+export default EBSReportMenu;

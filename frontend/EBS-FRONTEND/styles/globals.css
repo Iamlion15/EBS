@@ -1,0 +1,32 @@
+/* styles/globals.css */
+@font-face {
+    font-family: 'CopperplateGothic';
+    src: url('../public/fonts/js/Copperplate_Gothic_Bold_Regular-normal.js') format('javascript');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'NunitoBold';
+    src: url('../public/fonts/js/Nunito_Bold-normal.js') format('javascript');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'NunitoRegular';
+    src: url('../public/fonts/js/Nunito_Regular-normal.js') format('javascript');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'NunitoLight';
+    src: url('../public/fonts/js/Nunito_Light-normal.js') format('javascript');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+
+  

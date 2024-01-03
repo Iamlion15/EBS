@@ -13,6 +13,7 @@ import RenewContract from '../Modals/renewContract';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import ReportMenu from '../Reporting/ReportMenu';
+import EBSReportMenu from '../Reporting/EBSReportMenu';
 
 
 const HeaderComponent = ({ page, logout }) => {
@@ -58,6 +59,10 @@ const HeaderComponent = ({ page, logout }) => {
     const [reportModal, setReportModal] = useState(false)
     const toggleReportModal = () => {
         setReportModal(!reportModal);
+    };
+    const [ebsReportModal, setEbsReportModal] = useState(false)
+    const toggleEbsReportModal = () => {
+        setEbsReportModal(!ebsReportModal);
     };
     const updateHandler = async (e) => {
         e.preventDefault();
@@ -145,7 +150,13 @@ const HeaderComponent = ({ page, logout }) => {
                                 </div>
                             </DropdownItem>
                             {(user.role === "FINANCE" || user.role === "EBS") && (
-                                <DropdownItem onClick={toggleReportModal}>
+                                <DropdownItem onClick={() => {
+                                    if (user.role === 'EBS') {
+                                        toggleEbsReportModal();
+                                    } else if (user.role === 'FINANCE') {
+                                        toggleReportModal();
+                                    }
+                                }}>
                                     <div className='d-flex flex-row'>
                                         <i class="bi bi-pencil-fill"></i>
                                         <p className='mx-3 my-0 py-0 text-muted'>Reporting</p>
@@ -182,6 +193,11 @@ const HeaderComponent = ({ page, logout }) => {
                     <ReportMenu
                         modalIsOpen={reportModal}
                         toggleModal={toggleReportModal} />
+                </div>
+                <div>
+                    <EBSReportMenu
+                        modalIsOpen={ebsReportModal}
+                        toggleModal={toggleEbsReportModal} />
                 </div>
                 <div>
                     {renewContractModal && <RenewContract

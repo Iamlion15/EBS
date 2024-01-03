@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
 import FinanceInvoiceGeneratePDF from "@/helpers/FinanceInvoiceReportPDF";
 
-const InvoiceReport = () => {
+const InvoiceReport = ({toggleModal}) => {
     const [dateRange, setDateRange] = useState({
         startDate: "",
         endDate: "",
@@ -23,6 +23,9 @@ const InvoiceReport = () => {
             const response = await axios.post("http://localhost:4000/api/report/finance/invoicereport", dateRange, config)
             console.log(response.data);
             if (response.data.length === 0) {
+                toast.success("There is 0 invoice in this period !", {
+                    position: toast.POSITION.TOP_RIGHT, autoClose: 1000
+                });
                 setShowCount(true)
             }
             else {

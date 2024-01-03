@@ -4,9 +4,11 @@ import GeneratePDF from "@/helpers/pdf";
 import axios from "axios";
 import FinanceGeneratePDF from "@/helpers/financePDF";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
 
 
-const ItemReportStatus = () => {
+const ItemReportStatus = ({toggleModal}) => {
     const [dateRange, setDateRange] = useState({
         startDate: "",
         endDate: "",
@@ -49,7 +51,9 @@ const ItemReportStatus = () => {
                     const response = await axios.post("http://localhost:4000/api/report/ebs/pendingreport", dateRange, config);
                     console.log(response.data)
                     if (response.data.items.length === 0) {
-
+                        toast.success("There is 0 item pending in this period !", {
+                            position: toast.POSITION.TOP_RIGHT, autoClose: 1000
+                        });
                     }
                     else {
                         GeneratePDF(response.data.items, printData)
@@ -59,7 +63,9 @@ const ItemReportStatus = () => {
                     if (userRole === "FINANCE") {
                         const response = await axios.post("http://localhost:4000/api/report/finance/pendingreport", dateRange, config);
                         if (response.data.items.length === 0) {
-
+                            toast.success("There is 0 item pending in this period !", {
+                                position: toast.POSITION.TOP_RIGHT, autoClose: 1000
+                            });
                         }
                         else {
                             GeneratePDF(response.data.items, printData)
@@ -83,7 +89,9 @@ const ItemReportStatus = () => {
                         const response = await axios.post("http://localhost:4000/api/report/ebs/approvedreport", dateRange, config);
                         console.log(response.data)
                         if (response.data.items.length === 0) {
-
+                            toast.success("There is 0 item reviewed in this period !", {
+                                position: toast.POSITION.TOP_RIGHT, autoClose: 1000
+                            });
                         }
                         else {
                             GeneratePDF(response.data.items, printData)
@@ -93,7 +101,9 @@ const ItemReportStatus = () => {
                         if (userRole === "FINANCE") {
                             const response = await axios.post("http://localhost:4000/api/report/finance/approvedreport", dateRange, config);
                             if (response.data.items.length === 0) {
-
+                                toast.success("There is 0 item reviewed in this period !", {
+                                    position: toast.POSITION.TOP_RIGHT, autoClose: 1000
+                                });
                             }
                             else {
                                 FinanceGeneratePDF(response.data.items, printData)
@@ -176,6 +186,7 @@ const ItemReportStatus = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer/>
         </div>
     )
 }

@@ -11,7 +11,7 @@ const GeneratePDF = (dataa, pData) => {
   const doc = new jsPDF(orientation, unit, size);
   const pageWidth = doc.internal.pageSize.getWidth();
   const imageSource = Logo.src;
-
+  doc.setFont('CopperplateGothic', 'normal');
   // Logo in the top-left corner
   doc.addImage(imageSource, 'JPEG', 15, 0, 80, 55);
 
