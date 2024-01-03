@@ -99,7 +99,7 @@ const GeneratePDF = (dataa, pData) => {
   doc.text(addressText, addressTextX, doc.autoTable.previous.finalY + lineHeight * 3);
 
   // Save PDF
-  doc.save('report.pdf');
+  doc.save('item status report effective.pdf');
 };
 
 export default GeneratePDF;

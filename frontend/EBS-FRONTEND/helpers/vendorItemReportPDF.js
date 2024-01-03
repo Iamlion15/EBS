@@ -4,7 +4,7 @@ import { formatDate } from './ReportDateHelper';
 import formatDateToCustomFormat from './dateFormatter';
 import 'jspdf-autotable';
 
-const VendorReportPDF = (dataa,pData) => {
+const VendorItemReportPDF = (dataa,names) => {
   new jsPDF();
   const unit = 'mm';
   const size = 'a3';
@@ -30,7 +30,7 @@ const VendorReportPDF = (dataa,pData) => {
   doc.line(15, 40, pageWidth - 15, 40);
 
   // Page Title
-  const titleText = "VENDOR REPORT";
+  const titleText = "VENDOR ITEM REPORT";
   doc.setFontSize(15);
   doc.text(titleText, 15, 55);
   
@@ -38,23 +38,30 @@ const VendorReportPDF = (dataa,pData) => {
   doc.setDrawColor('#2E5A88');
   doc.line(15, 95, pageWidth - 15, 95);
 
+    // Vendor  information
+    const datePeriod = `Vendor Names: ${names}`;
+    const datePeriodLines = doc.splitTextToSize(datePeriod, pageWidth - 30);
+    doc.setFontSize(13);
+    doc.text(datePeriodLines, 15, 75);
+  
+    // Line
+    doc.setLineWidth(0.5);
+    doc.setDrawColor('#2E5A88');
+    doc.line(15, 95, pageWidth - 15, 95);
   // Report Details
-  const startY = 65;
+  const startY = 85;
   const lineHeight = 15;
   let currentY = startY;
 
   const printData = dataa.map((data, index) => {
-    const names = `${data.firstname} ${data.lastname}`;
-    const phone = data.phone
-    const email=data.email
-    const contracteStartedOn=formatDateToCustomFormat(data.contract.startDate)
-    const contracteEndOn=formatDateToCustomFormat(data.contract.endDate)
-
-    return [index + 1, names, phone, email,contracteStartedOn,contracteEndOn];
+    const itemname = data.itemName
+    const itemprice = data.itemPrice+" RWF"
+    const category=data.category
+    return [index + 1, itemname, itemprice, category];
   });
 
 doc.autoTable({
-  head: [['No.', 'VENDOR NAMES','VENDOR PHONE','VENDOR EMAIL', 'CONTRACT STARTED ON', 'CONTRACT END ON']],
+  head: [['No.', 'ITEM NAME','ITEM PRICE','CATEGORY']],
   body: printData,
   startY: startY,
   margin: { top: 5, bottom: 5 }, // Reduced top and bottom margin
@@ -85,7 +92,7 @@ doc.autoTable({
   doc.text(addressText, addressTextX, doc.autoTable.previous.finalY + lineHeight * 3);
 
   // Save PDF
-  doc.save(`vendor report effective on${currentDate}.pdf`);
+  doc.save(`vendor item report effective on${currentDate}.pdf`);
 };
 
-export default VendorReportPDF;
+export default VendorItemReportPDF;

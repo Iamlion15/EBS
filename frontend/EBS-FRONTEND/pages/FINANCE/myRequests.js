@@ -59,7 +59,7 @@ const MyRequests = () => {
             const financedata = [];
             console.log(response.data);
             for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i].EBS_Approval.approved === true && response.data[i].Finance_Approval.approved === false) {
+                if (response.data[i].EBS_Approval.approved === true && response.data[i].status === "pending" ) {
                     financedata.push(response.data[i])
                 }
             }

@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { Modal, ModalHeader } from "reactstrap";
+import RejectionModal from "./RejectionModal";
 
 
 const ApproveItemModal = ({ modalIsOpen, toggleModal, data,setData, confirmHandler }) => {
     const [activateConfrim, setActivateConfirm] = useState(false);
     const [activateVendorDetails, setActivateVendorDetails] = useState(false)
+    const [showRejectModal, setShowRejectModal] = useState(false)
+    const toggleShowRejectionModal = () => {
+        setShowRejectModal(!showRejectModal)
+    }
     const handleInput = (e) => {
         const input = e.target.value
         if (input === data.ItemName) {
@@ -63,10 +68,21 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data,setData, confirmHandl
                         </div>
                     </div>)}
                     <div className="d-flex justify-content-end m-4">
-                        <button type="button" className="btn btn-light mx-4" onClick={() => toggleModal()}>Cancel</button>
+                    <div>
+                            {!activateVendorDetails ?
+                                <button type="button" className="btn btn-light mx-4" onClick={() => toggleModal()}>Cancel</button> :
+                                <button type="button" className="btn btn-danger mx-4" onClick={() => toggleShowRejectionModal()}>Reject</button>}
+                        </div>
                         <button type="button" className={!activateConfrim ? "btn btn-light" : "btn btn-primary"} disabled={!activateConfrim} onClick={confirmHandler}>Confirm</button>
                     </div>
                 </div>
+            </div>
+            <div>
+                {showRejectModal && <RejectionModal
+                    modalIsOpen={showRejectModal}
+                    toggleModal={toggleShowRejectionModal}
+                    toggleParentModal={toggleModal}
+                    data={data} />}
             </div>
         </Modal>
     )

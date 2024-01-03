@@ -26,8 +26,8 @@ const SidebarItems = {
                 link: ""
             },
             {
-                title: "Approved Item",
-                icon: <i class="bi bi-card-checklist mx-2"></i>,
+                title: "Request info",
+                icon: <i class="bi bi-copy mx-2"></i>,
                 link: ""
             },
         ]
