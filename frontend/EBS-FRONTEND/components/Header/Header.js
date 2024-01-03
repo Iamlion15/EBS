@@ -12,10 +12,12 @@ import { ToastContainer, toast } from "react-toastify";
 import RenewContract from '../Modals/renewContract';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+import ReportMenu from '../Reporting/ReportMenu';
 
 
 const HeaderComponent = ({ page, logout }) => {
     const [user, setUser] = useState('')
+    const [rolee,setRolee]=useState("")
     const [email, setEmail] = useState('')
     const [terminateContractModal,setTerminateContractModal]=useState(false)
     const [data, setData] = useState({
@@ -43,6 +45,7 @@ const HeaderComponent = ({ page, logout }) => {
             email: userData.email
         })
         setEmail(userData.email)
+        setRolee(JSON.parse(localStorage.getItem('user')).role)
     }, [])
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const toggleModal = () => {
@@ -116,7 +119,7 @@ const HeaderComponent = ({ page, logout }) => {
                             color='default'
                         />
                         <DropdownMenu className='shadow rounded-3'>
-                            <DropdownItem onClick={toggleModal}>
+                            <DropdownItem>
                                 <div className='d-flex flex-row'>
                                     <div className='d-flex align-items-center'>
                                         <i class="bi bi-info-circle mx-2" style={{ fontSize: '1.7em' }}></i>
@@ -124,11 +127,12 @@ const HeaderComponent = ({ page, logout }) => {
                                     <div className='d-flex flex-column m-0 p-0'>
                                         <p className='m-0 p-0'><strong>{user.username}</strong></p>
                                         <p className='text-muted m-0 p-0'>{email}</p>
+                                        <p className='m-0 p-0'><small>{rolee}</small></p>
                                     </div>
                                 </div>
                             </DropdownItem>
                             <DropdownItem divider />
-                            <DropdownItem onClick={toggleModal}>
+                            <DropdownItem onClick={toggleModal} className='mt-0 pt-0'>
                                 <div className='d-flex flex-row'>
                                     <i class="bi bi-pencil-fill"></i>
                                     <p className='mx-3 my-0 py-0 text-muted'>Update profile</p>
@@ -175,7 +179,7 @@ const HeaderComponent = ({ page, logout }) => {
                     />
                 </div>
                 <div>
-                    <GenerateReportModal
+                    <ReportMenu
                         modalIsOpen={reportModal}
                         toggleModal={toggleReportModal} />
                 </div>

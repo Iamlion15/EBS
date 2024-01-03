@@ -7,6 +7,7 @@ import Logout from "@/helpers/logout";
 import MyRequests from "./myRequests";
 import Feedback from "./feedBacks";
 import Vendors from "./vendors";
+import ReviewedRequestsInfo from "./ReviewedRequestsInfo";
 
 const Index = () => {
     const [page, setPage] = useState("Dashboard")
@@ -31,6 +32,9 @@ const Index = () => {
                         )}
                         {page === 'Vendors' && (
                             <Vendors />
+                        )}
+                        {page === 'Past requests' && (
+                            <ReviewedRequestsInfo />
                         )}
                     </div>
                 </div>

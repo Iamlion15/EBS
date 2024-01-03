@@ -7,6 +7,7 @@ import Feedback from "./feedBacks";
 import Logout from "@/helpers/logout";
 import Dashboard from "./dashboard";
 import { useRouter } from 'next/router';
+import FinanceReviewedRequestsInfo from "./ReviewedRequestsInfo";
 import FinanceStatusModal from "@/components/Modals/financeSuccessStatusModal";
 import FailureModal from "@/components/Modals/financeFailureStatusModal";
 
@@ -54,6 +55,9 @@ const Index = () => {
                         )}
                         {page === 'Feedback' && (
                             <Feedback />
+                        )}
+                        {page === 'Past requests' && (
+                            <FinanceReviewedRequestsInfo />
                         )}
 
                     </div>

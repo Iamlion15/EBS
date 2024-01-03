@@ -1,5 +1,6 @@
 const itemrequest = require("../model/ItemRequest")
 const vendorModel = require("../model/vendorModel")
+const invoiceModel=require("../model/invoiceModel")
 
 exports.itemStatistics = async (req, res) => {
     try {
@@ -144,6 +145,25 @@ exports.PendingReportByEBS = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+exports.getInvoices = async (req, res) => {
+    const { startDate, endDate } = req.body;
+    try {
+        const items = await invoiceModel.find({
+            createdAt: {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate),
+            }
+        })
+            .populate("vendoritem")
+            .populate("requestedBy")
+            .populate("financeApprovedBy")
+            .populate("EBSApprovedBy")
+        res.status(200).json(items)
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
 
 
 exports.PendingReportByFINANCE = async (req, res) => {

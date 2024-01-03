@@ -5,15 +5,17 @@ const {itemStatistics,CountDocumentsByEBSpproval,CountDocumentsByFinanceApproval
 const { checkEBSAuthorization,checkFINANCEAuthorization,checkSTAFFAuthorization,checkApproversAuthorization,  } = require("../middlewares/checkAuthorization")
 
 
-const { addItem,ReviewRequest,deleteItem,getItems,getOneItem,updateItem,EBSReviewRequest,getFinanceItems,acceptPayment,processFailureInfo,processSuccessInfo } = require("../controller/itemController")
+const { addItem,ReviewRequest,deleteItem,getItems,getOneItem,updateItem,EBSReviewRequest,getFinanceItems,acceptPayment,processFailureInfo,processSuccessInfo,RejectRequest,getDetailedItems,getInvoices } = require("../controller/itemController")
 
 
 router.post("/save", checkAuthentication, checkSTAFFAuthorization,uploadDocument, addItem)
 router.post("/approve", checkAuthentication, checkApproversAuthorization,acceptPayment)
+router.post("/reject", checkAuthentication, checkApproversAuthorization,RejectRequest)
 router.post("/ebsapprove/:vendoritem", checkAuthentication, checkApproversAuthorization, EBSReviewRequest)
 router.post("/update", checkAuthentication, checkSTAFFAuthorization,uploadDocument, updateItem)
 router.delete("/delete/:id", checkAuthentication, checkSTAFFAuthorization, deleteItem)
 router.get("/getall", checkAuthentication, getItems)
+router.get("/getstatusitems", checkAuthentication, getDetailedItems)
 router.get("/financegetall", checkAuthentication, getFinanceItems)
 router.get("/get/:id", checkAuthentication, getOneItem);
 router.get("/statistics",checkAuthentication,checkSTAFFAuthorization,itemStatistics)

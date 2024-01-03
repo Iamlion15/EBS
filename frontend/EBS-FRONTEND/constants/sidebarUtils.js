@@ -53,6 +53,11 @@ const SidebarItems = {
                 icon: <i class="bi bi-receipt-cutoff mx-2"></i>,
                 link: ""
             },
+            {
+                title: "Past requests",
+                icon: <i class="bi bi-card-checklist mx-2"></i>,
+                link: ""
+            },
         ]
     },
     FINANCE: {
@@ -69,6 +74,11 @@ const SidebarItems = {
             {
                 title: "Feedback",
                 icon: <i class="bi bi-chat-left-fill mx-2"></i>,
+                link: ""
+            },
+            {
+                title: "Past requests",
+                icon: <i class="bi bi-card-checklist mx-2"></i>,
                 link: ""
             },
         ]

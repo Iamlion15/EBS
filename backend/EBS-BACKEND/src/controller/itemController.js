@@ -80,6 +80,15 @@ exports.getItems = async (req, res) => {
         res.status(400).json({ error: err })
     }
 }
+exports.getDetailedItems = async (req, res) => {
+    try {
+        const items = await itemRequestModel.find().populate("item").populate("owner").populate("vendoritem");
+        res.status(200).json(items)
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
 
 exports.getFinanceItems = async (req, res) => {
     try {
@@ -122,6 +131,29 @@ exports.deleteItem = async (req, res) => {
         res.status(400).json({ error: err })
     }
 }
+exports.RejectRequest = async (req, res, next) => {
+    try {
+        const item = await itemRequestModel.findOne({ _id: req.body.requestid });
+        if (!item) {
+            return res.status(404).json({ message: 'item not found' });
+        }
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        item.status="Rejected"
+        item.rejectionDetails.rejectedOn = formattedDate
+        item.rejectionDetails.comment = req.body.comment
+        item.rejectionDetails.rejectedBy = req.body.role
+        await item.save();
+        res.status(200).json({ "message": 'Successful' });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+}
+
 exports.ReviewRequest = async (req, res, next) => {
     try {
         const item = await itemRequestModel.findOne({ _id: req.body.id });

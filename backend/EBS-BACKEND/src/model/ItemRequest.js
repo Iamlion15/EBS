@@ -29,8 +29,13 @@ const itemRequestSchema=new mongoose.Schema({
     status:{
         type:String,
         default:"Pending",
-        enum:["Pending","Approved"]
+        enum:["Pending","Approved","Rejected"]
     },
+    rejectionDetails:{
+       comment:String,
+       rejectedOn:Date,
+       rejectedBy:String
+    }
 },{timestamps:true})
 
 const itemRequestModel=mongoose.model("itemrequest",itemRequestSchema)

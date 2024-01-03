@@ -52,7 +52,7 @@ const MyRequests = () => {
             const ebsdata=[];
             console.log(response.data);
             for(let i=0;i<response.data.length;i++){
-                if(response.data[i].EBS_Approval.approved===false){
+                if(response.data[i].EBS_Approval.approved===false &&response.data[i].status==="Pending"){
                     ebsdata.push(response.data[i])
                 }
             }
@@ -108,7 +108,6 @@ const MyRequests = () => {
     }
     return (
         <>
-            {!viewApp && (
                 <div className="mx-4 font-monospace">
                     <p><strong> All Requests</strong></p>
                     <div className="card rounded-3 shadow-sm">
@@ -200,12 +199,6 @@ const MyRequests = () => {
                         <ToastContainer />
                     </div>
                 </div>
-            )}
-            {viewApp && (
-                <ViewApplication document={details}
-                    setViewApp={setViewApp}
-                />
-            )}
 
         </>
     )

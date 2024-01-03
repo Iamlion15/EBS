@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Modal, ModalHeader, Input } from "reactstrap";
 import axios from "axios";
+import RejectionModal from "./RejectionModal";
 
 
 const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) => {
@@ -11,7 +12,8 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
     const [selectedValue, setSelectedValue] = useState('');
     const [selectedItemValue, setSelectedItemValue] = useState('');
     const [vendors, setVendors] = useState([])
-    const [vendorItems,setVendorItems]=useState([])
+    const [vendorItems, setVendorItems] = useState([])
+    const [showRejectModal, setShowRejectModal] = useState(false)
     const handleInput = (e) => {
         const input = e.target.value
         if (input === data.ItemName) {
@@ -21,10 +23,15 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
             setShowVendors(false)
         }
     }
+    const toggleShowRejectionModal = () => {
+        console.log("EXECUTED");
+        setShowRejectModal(!showRejectModal)
+       // toggleModal()
+    }
     const handleSelectVendorChange = async (e) => {
         setSelectedValue(e.target.value);
         setActivateConfirmVendor(false)
- 
+
     }
     const handleSelectVendorItemChange = async (e) => {
         setSelectedItemValue(e.target.value);
@@ -50,7 +57,7 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
         }
     };
     useEffect(async () => {
-        
+
         const config = {
             headers: {
                 'Content-Type': "application/json",
@@ -75,7 +82,7 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
                 </ModalHeader>
                 <div>
                     <div className="m-3">
-                        <span className="mb-2">If u need more information on : <strong> {data.firstname} {data.lastname}</strong> 's document,</span>
+                        <span className="mb-2">If u need more information on : <strong> {data.firstname} {data.lastname}</strong> 's request,</span>
                         <span className="mb-2">there is a portal for asking more details,Thank You.</span>
                         <div className="mt-2">
                             <p className="text-sucess"><small>Type in item name<span className="text-primary"> "{data.ItemName}" </span>to approve request of this item </small></p>
@@ -99,7 +106,7 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
                                 </Input>
                             </div>
                             <div>
-                                <button className="btn btn-primary btn-sm mt-2" disabled={activateConfirmVendor} onClick={()=>findVendorItems()}>Confirm</button>
+                                <button className="btn btn-primary btn-sm mt-2" disabled={activateConfirmVendor} onClick={() => findVendorItems()}>Confirm</button>
                             </div>
                         </div>)}
 
@@ -114,17 +121,28 @@ const ApproveItemModal = ({ modalIsOpen, toggleModal, data, confirmHandler }) =>
                                 <option value="" disabled>Select an item</option>
                                 {vendorItems.map((vendoritem) => (
                                     <option key={vendoritem._id} value={vendoritem._id}>
-                                    {vendoritem.itemName} -- {vendoritem.itemPrice} RWF
+                                        {vendoritem.itemName} -- {vendoritem.itemPrice} RWF
                                     </option>
                                 ))}
                             </Input>
                         </div>)}
                     </div>
                     <div className="d-flex justify-content-end m-4">
-                        <button type="button" className="btn btn-light mx-4" onClick={() => toggleModal()}>Cancel</button>
-                        <button type="button" className={!activateConfrim ? "btn btn-light" : "btn btn-primary"} disabled={!activateConfrim} onClick={()=>confirmHandler(selectedItemValue)}>Confirm</button>
+                        <div>
+                            {!showVendors ?
+                                <button type="button" className="btn btn-light mx-4" onClick={() => toggleModal()}>Cancel</button> :
+                                <button type="button" className="btn btn-danger mx-4" onClick={() => toggleShowRejectionModal()}>Reject</button>}
+                        </div>
+                        <button type="button" className={!activateConfrim ? "btn btn-light" : "btn btn-primary"} disabled={!activateConfrim} onClick={() => confirmHandler(selectedItemValue)}>Confirm</button>
                     </div>
                 </div>
+            </div>
+            <div>
+                {showRejectModal && <RejectionModal
+                    modalIsOpen={showRejectModal}
+                    toggleModal={toggleShowRejectionModal}
+                    toggleParentModal={toggleModal}
+                    data={data} />}
             </div>
         </Modal>
     )
