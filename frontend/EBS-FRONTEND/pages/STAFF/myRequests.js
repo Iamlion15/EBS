@@ -21,6 +21,7 @@ const MyRequests = () => {
     const [viewApp, setViewApp] = useState(false)
     const [viewItemUpdate, setViewItemUpdate] = useState(false)
     const [details, setDetails] = useState({})
+    const [search, setSearch] = useState("")
     const [updateData, setUpdateData] = useState({
         id: "",
         ItemName: "",
@@ -122,7 +123,7 @@ const MyRequests = () => {
             toast.update(toastId.current, { render: "Failure", type: toast.TYPE.ERROR, autoClose: 2000 })
         }
     }
-
+    const filteredData = data.filter(searchedItem => searchedItem.item.ItemName.toLowerCase().startsWith(search.toLowerCase()));
     return (
         <>
             {!viewApp && (
@@ -136,7 +137,10 @@ const MyRequests = () => {
                                         <div className="input-group-prepend">
                                             <span className="input-group-text"><i className="bi bi-search"></i></span>
                                         </div>
-                                        <input type="text" className="form-control" placeholder="Search..." />
+                                        <input type="text" 
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="form-control" placeholder="Search..." />
                                     </div>
                                 </div>
                             </div>
@@ -144,14 +148,14 @@ const MyRequests = () => {
                                 <thead>
                                     <tr>
                                         <th>NO.</th>
-                                        <th>iTEM NAME</th>
+                                        <th>ITEM NAME</th>
                                         <th>SUBMITTED ON</th>
                                         <th>STATUS</th>
                                         <th>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.map((items, index) => {
+                                    {filteredData.map((items, index) => {
                                         return (
                                             <tr key={items._id}>
                                                 <td>{index + 1}</td> {/* Display a row number */}

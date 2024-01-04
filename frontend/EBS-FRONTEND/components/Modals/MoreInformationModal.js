@@ -48,7 +48,8 @@ const MessageModal = ({ modalIsOpen, toggleModal, data }) => {
     }
     const fetchChatData = async () => {
         const msgInformation = {
-            receiverId: data.receiver
+            receiverId: data.receiver,
+            itemRequestId:data.itemId
         }
         const config = {
             headers: {

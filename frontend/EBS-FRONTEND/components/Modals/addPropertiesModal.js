@@ -75,7 +75,7 @@ const AddpropertiesModal = ({ modalIsOpen, toggleModal, data, setData, index,pro
                                                 <input
                                                     className="form-control"
                                                     type="text"
-                                                    value={propert.title}
+                                                    // value={propert.title}
                                                     onChange={(e) => handleChange(index, 'title', e.target.value)}
                                                 />
                                             </div>
@@ -85,7 +85,7 @@ const AddpropertiesModal = ({ modalIsOpen, toggleModal, data, setData, index,pro
                                                 <input
                                                     className="form-control"
                                                     type="text"
-                                                    value={propert.value}
+                                                    // value={propert.value}
                                                     onChange={(e) => handleChange(index, 'value', e.target.value)}
                                                 />
                                             </div>

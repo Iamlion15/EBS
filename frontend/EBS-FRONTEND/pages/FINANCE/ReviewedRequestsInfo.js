@@ -9,6 +9,7 @@ const FinanceReviewedRequestsInfo = () => {
     const [data, setData] = useState([])
     const [showDetailedInfo,setShowDetailedInfo]=useState(false)
     const [info,setInfo]=useState();
+    const [search, setSearch] = useState("")
     const toggleDetailedInfo=()=>{
         setShowDetailedInfo(!showDetailedInfo)
     }
@@ -30,7 +31,7 @@ const FinanceReviewedRequestsInfo = () => {
             setData(response.data)
             const pendingData = [];
             for (let i = 0; i < response.data.length; i++) {
-                if ((response.data[i].status === "Rejected" && response.data[i].rejectionDetails.rejectedBy==="Finance") || response.data[i].status === "Approved"  ) {
+                if ((response.data[i].status === "Rejected" && response.data[i].rejectionDetails.rejectedBy==="FINANCE") || response.data[i].Finance_Approval.approved === true  ) {
                     pendingData.push(response.data[i])
                 }
             }
@@ -39,7 +40,7 @@ const FinanceReviewedRequestsInfo = () => {
             console.log(error)
         }
     }, [])
-
+    const filteredData = data.filter(searchedItem => searchedItem.item.ItemName.toLowerCase().startsWith(search.toLowerCase()));
     return (
         <>
                 <div className="mx-4 font-monospace">
@@ -52,7 +53,10 @@ const FinanceReviewedRequestsInfo = () => {
                                         <div className="input-group-prepend">
                                             <span className="input-group-text"><i className="bi bi-search"></i></span>
                                         </div>
-                                        <input type="text" className="form-control" placeholder="Search..." />
+                                        <input type="text" className="form-control" 
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        placeholder="Search..." />
                                     </div>
                                 </div>
                             </div>
@@ -66,7 +70,7 @@ const FinanceReviewedRequestsInfo = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.map((items, index) => {
+                                    {filteredData.map((items, index) => {
                                         return (
                                             <tr key={items._id} style={{cursor:"pointer"}}
                                             onClick={()=>showInfoWindow(items)}

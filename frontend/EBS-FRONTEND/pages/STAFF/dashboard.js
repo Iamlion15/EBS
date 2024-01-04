@@ -33,12 +33,12 @@ const Dashboard = () => {
     return (
         <>
             <div className="row mt-5 mb-2">
-                <DashboardCard color="#ff1900" message="canceled request(s)" icon="bi-journal-check" number={data.canceled} className="mt-2" bgcolor="#fde9ea"/>
-                <DashboardCard color="#4c97ff" message="pending request(s)" icon="bi-stopwatch" number={data.pending } className="mt-2" bgcolor="#edecff"/>
+                <DashboardCard color="#ff1900" message="Canceled request(s)" icon="bi-journal-check" number={data.canceled} className="mt-2" bgcolor="#fde9ea"/>
+                <DashboardCard color="#4c97ff" message="Pending request(s)" icon="bi-stopwatch" number={data.pending } className="mt-2" bgcolor="#edecff"/>
                 </div>
             <div className="row mt-5">
                 <DashboardCard color="bg-primary" message="Under-review request(s)" icon="bi-binoculars-fill" number={data.underReview } />
-                <DashboardCard color="bg-success" message="approved request(s)" icon="bi-file-earmark-check-fill" number={data.approved } className="mt-2" bgcolor="#c7f9cc"/>
+                <DashboardCard color="bg-success" message="Approved request(s)" icon="bi-file-earmark-check-fill" number={data.approved } className="mt-2" bgcolor="#c7f9cc"/>
             </div>
         </>
     )

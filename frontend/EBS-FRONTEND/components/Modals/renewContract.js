@@ -55,10 +55,6 @@ const RenewContract = ({ modalIsOpen, toggleModal, contractData, setContractData
     }
     const ConfirmRenew = async (e) => {
         e.preventDefault();
-        toastId.current = toast.info("Loading............", {
-            position: toast.POSITION.TOP_LEFT,
-            autoClose: false
-        })
         const config = {
             headers: {
                 'Content-Type': "application/json",
@@ -67,7 +63,11 @@ const RenewContract = ({ modalIsOpen, toggleModal, contractData, setContractData
         }
         try {
             const response = await axios.post("http://localhost:4000/api/vendor/updatecontract", newContract, config)
-            toast.update(toastId.current, { render: "Successfully sent data", type: toast.TYPE.SUCCESS, autoClose: 2000 })
+            console.log(response.data);
+            toast.success('Renewed  contract successfully', {
+                position: toast.POSITION.TOP_LEFT,
+                autoClose: 10000,
+            });
             toggleModal();
         } catch (error) {
             toast.update(toastId.current, { render: "Failure", type: toast.TYPE.ERROR, autoClose: 2000 })

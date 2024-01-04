@@ -26,7 +26,7 @@ const contractTerminationMail = async (receiver, vendorName, attachmentPath) => 
             <p style="color: #888; text-align: center;">We appreciate your past services and wish you the best in your future endeavors.</p>
             <p style="color: #888; text-align: center;">If you have any questions or concerns, please contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
             <p style="color: #888; text-align: center;">Thank you for your understanding.</p>
-            <p style="color: #888; text-align: center;">Sincerely,<br>Electronic Business Service</p>
+            <p style="color: #888; text-align: center;">Sincerely,<br>Enteprise Business Service</p>
         </div>
     </div>    
         `,

@@ -4,11 +4,12 @@ import GeneratePDF from "@/helpers/pdf";
 import axios from "axios";
 import FinanceGeneratePDF from "@/helpers/financePDF";
 import formatDateToCustomFormat from "@/helpers/dateFormatter";
+import RejectedRequestPDF from "@/helpers/rejectedRequestPDF";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from "react-toastify";
 
 
-const ItemReportStatus = ({toggleModal}) => {
+const ItemReportStatus = ({ toggleModal }) => {
     const [dateRange, setDateRange] = useState({
         startDate: "",
         endDate: "",
@@ -27,7 +28,7 @@ const ItemReportStatus = ({toggleModal}) => {
     const handleSelectChange = (e) => {
         const cat = e.target.value;
         setCategory(cat)
-        if (cat === "Pending" || cat === "Reviewed") {
+        if (cat === "Pending" || cat === "Reviewed" || cat === "Rejected") {
             setActivateDateChooser(true)
         }
         else {
@@ -76,8 +77,45 @@ const ItemReportStatus = ({toggleModal}) => {
                 console.log(error);
             }
         }
+        else if (category === "Reviewed") {
+            const config = {
+                headers: {
+                    'Content-Type': "application/json",
+                    'Authorization': JSON.parse(localStorage.getItem("token"))
+                }
+            }
+            try {
+                if (userRole === "EBS") {
+                    const response = await axios.post("http://localhost:4000/api/report/ebs/approvedreport", dateRange, config);
+                    console.log(response.data)
+                    if (response.data.items.length === 0) {
+                        toast.success("There is 0 item reviewed in this period !", {
+                            position: toast.POSITION.TOP_RIGHT, autoClose: 1000
+                        });
+                    }
+                    else {
+                        GeneratePDF(response.data.items, printData)
+                    }
+                }
+                else {
+                    if (userRole === "FINANCE") {
+                        const response = await axios.post("http://localhost:4000/api/report/finance/approvedreport", dateRange, config);
+                        if (response.data.items.length === 0) {
+                            toast.success("There is 0 item reviewed in this period !", {
+                                position: toast.POSITION.TOP_RIGHT, autoClose: 1000
+                            });
+                        }
+                        else {
+                            FinanceGeneratePDF(response.data.items, printData)
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
         else {
-            if (category === "Reviewed") {
+            if (category === "Rejected") {
                 const config = {
                     headers: {
                         'Content-Type': "application/json",
@@ -86,7 +124,7 @@ const ItemReportStatus = ({toggleModal}) => {
                 }
                 try {
                     if (userRole === "EBS") {
-                        const response = await axios.post("http://localhost:4000/api/report/ebs/approvedreport", dateRange, config);
+                        const response = await axios.post("http://localhost:4000/api/report/ebs/rejectedreport", dateRange, config);
                         console.log(response.data)
                         if (response.data.items.length === 0) {
                             toast.success("There is 0 item reviewed in this period !", {
@@ -94,19 +132,19 @@ const ItemReportStatus = ({toggleModal}) => {
                             });
                         }
                         else {
-                            GeneratePDF(response.data.items, printData)
+                            RejectedRequestPDF(response.data.items, printData)
                         }
                     }
                     else {
                         if (userRole === "FINANCE") {
-                            const response = await axios.post("http://localhost:4000/api/report/finance/approvedreport", dateRange, config);
+                            const response = await axios.post("http://localhost:4000/api/report/finance/rejectedreport", dateRange, config);
                             if (response.data.items.length === 0) {
                                 toast.success("There is 0 item reviewed in this period !", {
                                     position: toast.POSITION.TOP_RIGHT, autoClose: 1000
                                 });
                             }
                             else {
-                                FinanceGeneratePDF(response.data.items, printData)
+                                RejectedRequestPDF(response.data.items, printData)
                             }
                         }
                     }
@@ -114,17 +152,25 @@ const ItemReportStatus = ({toggleModal}) => {
                     console.log(error);
                 }
             }
-
         }
-
     }
     useEffect(() => {
         const usernam = JSON.parse(localStorage.getItem("user")).username
         const userRole = JSON.parse(localStorage.getItem("loggedInUser")).role
+        let title;
+        if (category === "Pending") {
+            title = "PERIOD PENDING ITEM REPORT"
+        }
+        else if (category === "Reviewed") {
+            title = "PERIOD APPROVED ITEM REPORT"
+        }
+        else {
+            title = "PERIOD REJECTED ITEM REPORT"
+        }
         setPrintData({
             role: userRole,
             username: usernam,
-            title: "PERIOD PENDING ITEM REPORT",
+            title: title,
             startDate: dateRange.startDate,
             endDate: dateRange.endDate
         })
@@ -141,7 +187,8 @@ const ItemReportStatus = ({toggleModal}) => {
                     <select className="form-select form-select-sm" onChange={handleSelectChange}>
                         <option > Choose</option>
                         <option value="Pending" selected={category === "Pending"}>Pending</option>
-                        <option value="Reviewed" selected={category === "Reviewed"}>Reviewed</option>
+                        <option value="Reviewed" selected={category === "Reviewed"}>Approved</option>
+                        <option value="Rejected" selected={category === "Rejected"}>Rejected</option>
                     </select>
                 </div>
                 <div className="row">
@@ -186,7 +233,7 @@ const ItemReportStatus = ({toggleModal}) => {
                     </div>
                 </div>
             </div>
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     )
 }

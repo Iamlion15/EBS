@@ -3,12 +3,12 @@ import ContractDetailModal from "../Modals/contractDetails";
 
 const AddVendor = ({ nextStep, data, setData }) => {
 
-    const [modalIsOpen,setModalIsOpen]=useState(false)
-    const [showModifyContract,setShowModifyContract]=useState(false)
+    const [modalIsOpen, setModalIsOpen] = useState(false)
+    const [showModifyContract, setShowModifyContract] = useState(false)
     const [showAlert, setShowAlert] = useState(false);
     const handleNext = () => {
-        if (data.firstname.trim() === "" && data.lastname.trim() === "" && data.email.trim() === ""
-         && data.contract.startDate.trim() === "" && data.contract.endDate.trim() === "") {
+        const condition=data.firstname.trim() === "" && data.lastname.trim() === "" && data.phone.trim() === "" && data.email.trim() === ""&& data.contract.startDate.trim() === "" && data.contract.endDate.trim() === "" && data.phone.trim() === ""
+        if (condition) {
             setShowAlert(true)
         }
         else {
@@ -16,10 +16,10 @@ const AddVendor = ({ nextStep, data, setData }) => {
             nextStep()
         }
     }
-    const toggleModal=()=>{     
+    const toggleModal = () => {
         setModalIsOpen(!modalIsOpen)
     }
-    const buttonToggleModal=(e)=>{
+    const buttonToggleModal = (e) => {
         e.preventDefault();
         setModalIsOpen(!modalIsOpen)
     }
@@ -27,21 +27,21 @@ const AddVendor = ({ nextStep, data, setData }) => {
         setShowModifyContract(false)
         console.log(data);
         setData({
-          ...data,
-          contract: {
-            ...data.contract,
-            file: e.target.files[0]
-          }
+            ...data,
+            contract: {
+                ...data.contract,
+                file: e.target.files[0]
+            }
         });
         toggleModal();
         setShowModifyContract(true)
-      };
+    };
 
 
     return (
         <>
 
-            <form className="mt-5" style={{ marginTop: "20px" }}>
+            <div className="mt-5" style={{ marginTop: "20px" }}>
                 {showAlert && (<div className="alert alert-danger alert-dismissible m-0 p-0">
                     <p className="m-2">Please fill in data</p>
                 </div>)}
@@ -73,16 +73,16 @@ const AddVendor = ({ nextStep, data, setData }) => {
                         </div>
                         <div className="col">
                             <div className="d-flex flex-column">
-                            <div className="form-group">
-                                <label htmlFor="phone">UPLOAD CONTRACT</label>
-                                <div className="input-group mb-3 my-3">
-                                    <input type="file" className="form-control" id="upload" onChange={handleFileChange} />
-                                    <label className="input-group-text" htmlFor="upload">Upload</label>
+                                <div className="form-group">
+                                    <label htmlFor="phone">UPLOAD CONTRACT</label>
+                                    <div className="input-group mb-3 my-3">
+                                        <input type="file" className="form-control" id="upload" onChange={handleFileChange} />
+                                        <label className="input-group-text" htmlFor="upload">Upload</label>
+                                    </div>
                                 </div>
-                            </div>
-                            {showModifyContract&& (<div>
-                                <button className="btn btn-primary btn-sm" onClick={buttonToggleModal}>Modify contract information</button>
-                            </div>)}
+                                {showModifyContract && (<div>
+                                    <button className="btn btn-primary btn-sm" onClick={buttonToggleModal}>Modify contract information</button>
+                                </div>)}
                             </div>
                         </div>
                         <div className="col-6 mb-3 mt-2">
@@ -124,13 +124,13 @@ const AddVendor = ({ nextStep, data, setData }) => {
                         <></>
                     </div>
                 </div>
-            </form>
+            </div>
             <div>
                 {modalIsOpen && (<ContractDetailModal
-                                    contractData={data}
-                                    setContractData={setData}
-                                    modalIsOpen={modalIsOpen}
-                                    toggleModal={toggleModal}
+                    contractData={data}
+                    setContractData={setData}
+                    modalIsOpen={modalIsOpen}
+                    toggleModal={toggleModal}
                 />)}
             </div>
         </>

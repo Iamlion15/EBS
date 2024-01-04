@@ -10,12 +10,12 @@ import formatDateToCustomFormat from "@/helpers/dateFormatter";
 import MessageModal from "@/components/Modals/MoreInformationModal";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import ApproveItemModal from "@/components/Modals/ApproveItemModal";
 
 const Feedback = () => {
     const [data, setData] = useState([])
     const [messageModal, setMessageModal] = useState(false)
     const [loggedInUserId, setLoggedInUserId] = useState('')
+    const [search, setSearch] = useState("")
     const [messageData, setMessageData] = useState({
         receiver: "",
         firstname: "",
@@ -32,6 +32,7 @@ const Feedback = () => {
             firstname: info.itemrequest.owner.firstname,
             lastname: info.itemrequest.owner.lastname,
             ItemName: info.itemrequest.item.ItemName,
+            itemId: info.itemrequest._id
         })
         setMessageModal(true)
     }
@@ -50,6 +51,7 @@ const Feedback = () => {
             console.log(error)
         }
     }, [])
+    const filteredData = data.filter(searchedItem => searchedItem.itemrequest.item.ItemName.toLowerCase().startsWith(search.toLowerCase()));
     return (
         <>
             <div className="mx-4 font-monospace">
@@ -62,7 +64,10 @@ const Feedback = () => {
                                     <div className="input-group-prepend">
                                         <span className="input-group-text"><i className="bi bi-search"></i></span>
                                     </div>
-                                    <input type="text" className="form-control" placeholder="Search..." />
+                                    <input type="text"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="form-control" placeholder="Search..." />
                                 </div>
                             </div>
                         </div>
@@ -70,7 +75,7 @@ const Feedback = () => {
                             <thead>
                                 <tr>
                                     <th>NO.</th>
-                                    <th>iTEM NAME</th>
+                                    <th>ITEM NAME</th>
                                     <th>STAFF NAME</th>
                                     <th>SUBMITTED ON</th>
                                     <th>CONVERSATION STARTED</th>
@@ -78,9 +83,9 @@ const Feedback = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.map((convo, index) => {
+                                {filteredData.map((convo, index) => {
                                     return (
-                                        <tr key={convo._id} className={`${!convo.message[convo.message.length - 1].Read.isRead && convo.message[convo.message.length - 1].sender._id !== loggedInUserId? 'table-info': ''}`}>
+                                        <tr key={convo._id} className={`${!convo.message[convo.message.length - 1].Read.isRead && convo.message[convo.message.length - 1].sender._id !== loggedInUserId ? 'table-info' : ''}`}>
                                             <td>{index + 1}</td> {/* Display a row number */}
                                             <td>{convo.itemrequest.item.ItemName}</td>
                                             <td>{convo.itemrequest.owner.firstname} {convo.itemrequest.owner.lastname}</td>

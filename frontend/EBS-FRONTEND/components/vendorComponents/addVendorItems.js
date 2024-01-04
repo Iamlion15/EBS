@@ -104,6 +104,7 @@ const AddVendorItem = ({ nextStep, prevStep,items,setItems,property,setProperty 
                                             <option value="ELECTRONICS">ELECTRONICS</option>
                                             <option value="OFFICE EQUIPMENT">OFFICE EQUIPMENT</option>
                                             <option value="COMPUTER FACILITY">COMPUTER FACILITY</option>
+                                            <option value="COMPUTER FACILITY">COMPUTER</option>
                                         </select>
                                     </div>
                                 </td>

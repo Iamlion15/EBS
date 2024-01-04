@@ -4,7 +4,7 @@ import { formatDate } from './ReportDateHelper';
 import formatDateToCustomFormat from './dateFormatter';
 import 'jspdf-autotable';
 
-const GeneratePDF = (dataa, pData) => {
+const GenerateRejectedReportPDF = (dataa, pData) => {
   const unit = 'mm';
   const size = 'a4';
   const orientation = 'portrait';
@@ -102,4 +102,4 @@ const GeneratePDF = (dataa, pData) => {
   doc.save('item status report effective.pdf');
 };
 
-export default GeneratePDF;
+export default GenerateRejectedReportPDF;

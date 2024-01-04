@@ -6,8 +6,13 @@ import axios from 'axios';
 
 const TerminateContract = ({ modalIsOpen, toggleModal, selectedRow,toggleParentModal }) => {
     const [supportingFile, setSupportingFile] = useState();
+    const toastId = useRef(null)
     const handleTermination = async (e) => {
         e.preventDefault();
+        toastId.current = toast.info("Loading............", {
+            position: toast.POSITION.TOP_LEFT,
+            autoClose: 5000
+        })
         const config = {
             headers: {
                 'Content-Type': "multipart/form-data",
@@ -18,7 +23,8 @@ const TerminateContract = ({ modalIsOpen, toggleModal, selectedRow,toggleParentM
             const formdata = new FormData();
             formdata.append('file', supportingFile)
             const response = await axios.post(`http://localhost:4000/api/vendor/terminate/${selectedRow._id}`, formdata, config)
-            toast.success('Terminated contract', {
+            console.log(response.data);
+            toast.success('Contract terminated successfully', {
                 position: toast.POSITION.TOP_LEFT,
                 autoClose: 10000,
             });

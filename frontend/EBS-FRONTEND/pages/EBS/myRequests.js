@@ -19,6 +19,7 @@ const MyRequests = () => {
     const [viewApp, setViewApp] = useState(false)
     const [viewItemApprove, setViewItemApprove] = useState(false)
     const [details, setDetails] = useState({})
+    const [search, setSearch] = useState("")
     const [approveData, setApproveData] = useState({
         id: "",
         ItemName: "",
@@ -106,6 +107,7 @@ const MyRequests = () => {
             toast.update(toastId.current, { render: "Failure", type: toast.TYPE.ERROR, autoClose: 2000 })
         }
     }
+    const filteredData = data.filter(searchedItem => searchedItem.item.ItemName.toLowerCase().startsWith(search.toLowerCase()));
     return (
         <>
                 <div className="mx-4 font-monospace">
@@ -118,7 +120,10 @@ const MyRequests = () => {
                                         <div className="input-group-prepend">
                                             <span className="input-group-text"><i className="bi bi-search"></i></span>
                                         </div>
-                                        <input type="text" className="form-control" placeholder="Search..." />
+                                        <input type="text"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="form-control" placeholder="Search..." />
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +138,7 @@ const MyRequests = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.map((items, index) => {
+                                    {filteredData.map((items, index) => {
                                         return (
                                             <tr key={items._id}>
                                                 <td>{index + 1}</td> {/* Display a row number */}

@@ -9,6 +9,7 @@ const ReviewedRequestsInfo = () => {
     const [data, setData] = useState([])
     const [showDetailedInfo,setShowDetailedInfo]=useState(false)
     const [info,setInfo]=useState();
+    const [search, setSearch] = useState("")
     const toggleDetailedInfo=()=>{
         setShowDetailedInfo(!showDetailedInfo)
     }
@@ -39,7 +40,7 @@ const ReviewedRequestsInfo = () => {
             console.log(error)
         }
     }, [])
-
+    const filteredData = data.filter(searchedItem => searchedItem.item.ItemName.toLowerCase().startsWith(search.toLowerCase()));
     return (
         <>
                 <div className="mx-4 font-monospace">
@@ -52,7 +53,10 @@ const ReviewedRequestsInfo = () => {
                                         <div className="input-group-prepend">
                                             <span className="input-group-text"><i className="bi bi-search"></i></span>
                                         </div>
-                                        <input type="text" className="form-control" placeholder="Search..." />
+                                        <input type="text" 
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="form-control" placeholder="Search..." />
                                     </div>
                                 </div>
                             </div>
@@ -66,7 +70,7 @@ const ReviewedRequestsInfo = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.map((items, index) => {
+                                    {filteredData.map((items, index) => {
                                         return (
                                             <tr key={items._id} style={{cursor:"pointer"}}
                                             onClick={()=>showInfoWindow(items)}
@@ -75,7 +79,7 @@ const ReviewedRequestsInfo = () => {
                                                 <td>{items.item.ItemName}</td>
                                                 <td>{formatDateToCustomFormat(items.item.createdAt)}</td>
                                                 <td>
-                                                    {items.status==="Approved"?(<span className="badge rounded-pill bg-success">Complete</span>)
+                                                    {items.EBS_Approval.approved===true?(<span className="badge rounded-pill bg-success">Approved</span>)
                                                     :(<span className="badge rounded-pill bg-danger">Rejected</span>)}
                                                 </td>
                                             </tr>

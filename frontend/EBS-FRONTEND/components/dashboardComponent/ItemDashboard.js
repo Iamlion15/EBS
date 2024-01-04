@@ -2,13 +2,13 @@ import formatDateToCustomFormat from "@/helpers/dateFormatter";
 const DashboardCard = ({ color, message, icon, number, bgcolor }) => {
     return (
         <>
-            <div className="col-4">
+            <div className="col-5">
                 <div className="card rounded-3" style={{ backgroundColor: bgcolor, borderColor: bgcolor }}>
                     <div className="d-flex flex-row mt-5 mx-3">
                         <div className="d-flex justify-content-left flex-column mx-4">
-                            <p className="font-monospace text-dark" style={{ fontSize: '0.7em', fontWeight: 'bold', whiteSpace: 'nowrap' }}>{message}</p>
+                            <p className="font-monospace text-dark" style={{ fontSize: '1.0em', fontWeight: 'bold', whiteSpace: 'nowrap' }}>{message}</p>
                             <div className="mt-0">
-                                <p className="font-monospace mx-1"><strong><em>{number} <span style={{ fontSize: '0.7em', fontWeight: 'bold', whiteSpace: 'nowrap' }}>item(s)</span></em></strong></p>
+                                <p className="font-monospace mx-1"><strong><em><span style={{ fontSize: '1.5em', fontWeight: 'bold'}}>{number} </span><span style={{ fontSize: '1.5em', fontWeight: 'bold', whiteSpace: 'nowrap' }}>item(s)</span></em></strong></p>
                             </div>
                         </div>
                         <div className="d-flex justify-content-right align-items-center" style={{ height: "100%" }}>

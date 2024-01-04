@@ -4,7 +4,7 @@ import { formatDate } from './ReportDateHelper';
 import formatDateToCustomFormat from './dateFormatter';
 import 'jspdf-autotable';
 
-const GeneratePDF = (dataa, pData) => {
+const RejectedRequestPDF = (dataa, pData) => {
   const unit = 'mm';
   const size = 'a4';
   const orientation = 'portrait';
@@ -20,7 +20,7 @@ const GeneratePDF = (dataa, pData) => {
   const dateText = `Date: ${currentDate}`;
   const dateTextWidth = doc.getTextWidth(dateText);
   const dateTextX = pageWidth - dateTextWidth - 15;
-  doc.setFontSize(9);
+  doc.setFontSize(15);
   doc.text(dateText, dateTextX, 25);
 
   // Underline
@@ -43,12 +43,12 @@ const GeneratePDF = (dataa, pData) => {
   // Date Period
   const datePeriod = `START DATE: ${pData.startDate}\n\nEND DATE: ${pData.endDate}\n\n`;
   const datePeriodLines = doc.splitTextToSize(datePeriod, pageWidth - 30);
-  doc.setFontSize(10);
+  doc.setFontSize(12);
   doc.text(datePeriodLines, 15, 75);
 
   // Report By
   doc.setFontSize(15);
-  doc.text(`PREPARED BY ${pData.role}`, 15, 90);
+  doc.text(`REPORT BY ${pData.role}`, 15, 92);
 
   // Line
   doc.setLineWidth(0.5);
@@ -64,13 +64,14 @@ const GeneratePDF = (dataa, pData) => {
     const names = `${data.owner.firstname} ${data.owner.lastname}`;
     const itemName = data.item.ItemName;
     const requestedOn = formatDateToCustomFormat(data.createdAt);
+    const rejectedOn=formatDateToCustomFormat(data.rejectionDetails.rejectedOn)
 
-    return [index + 1, itemName, names, requestedOn];
+    return [index + 1, itemName, names, requestedOn,rejectedOn];
   });
 
   // Auto-generate a table in the PDF using autoTable
   doc.autoTable({
-    head: [['No.', 'ITEM NAME', 'STAFF NAME', 'REQUESTED ON']],
+    head: [['No.', 'ITEM NAME', 'STAFF NAME', 'REQUESTED ON','REJECTED ON']],
     body: printData,
     startY: startY,
     margin: { top: 5, bottom: 5 }, // Reduced top and bottom margin
@@ -90,7 +91,7 @@ const GeneratePDF = (dataa, pData) => {
   doc.line(15, doc.autoTable.previous.finalY + lineHeight * 2, pageWidth - 15, doc.autoTable.previous.finalY + lineHeight * 2);
 
   // Address Text
-  const addressText = 'KN 5 Rd, KG 9 Ave, P.O. Box 6239, Remera, Kigali, Rwanda';
+  const addressText = 'KN 25 Rd, KG 1 Ave, P.O. Box 1111, Nyarugenge, Kigali, Rwanda';
   const textFontSize = 8;
   const addressTextWidth = doc.getTextWidth(addressText);
   const addressTextX = (pageWidth - addressTextWidth) / 2;
@@ -99,7 +100,7 @@ const GeneratePDF = (dataa, pData) => {
   doc.text(addressText, addressTextX, doc.autoTable.previous.finalY + lineHeight * 3);
 
   // Save PDF
-  doc.save('item status report effective.pdf');
+  doc.save('Rejected report.pdf');
 };
 
-export default GeneratePDF;
+export default RejectedRequestPDF;

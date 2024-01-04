@@ -13,7 +13,7 @@ const PaymentMethod = ({nextStep,prevStep,handleSaveVendor}) => {
                     <div className="form-group m-5">
                         <label htmlFor="itemType" className="mb-2">PAYMENT METHOD</label>
                         <select className="form-select" >
-                            <option value="MTN">MOMO</option>
+                            <option value="CARD">CARD PAYMENT(VISA,MASTERCARD)</option>
                         </select>
                     </div>
                     <div className="m-5">

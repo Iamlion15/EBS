@@ -51,10 +51,12 @@ exports.getMessagesBetweenUsers = async (req, res) => {
     try {
         const senderId = req.user.id;
         const receiverId = req.body.receiverId;
+        const itemRequestId=req.body.itemRequestId
 
         // Find the chat between the sender and the receiver
         const chat = await ChatModel.findOne({
             participants: { $all: [senderId, receiverId] },
+            itemrequest:itemRequestId
         })
             .populate({
                 path: 'participants',

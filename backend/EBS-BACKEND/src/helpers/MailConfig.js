@@ -22,7 +22,7 @@ const sendMail = async (receiver, vendorName, deliveryDetails) => {
                     </ul>
                     <p style="color: #888; text-align: center;">Please review the details and get ready for the delivery.</p>
                     <p style="color: #888; text-align: center;">Thank you for your service.</p>
-                    <p style="color: #888; text-align: center;">ELECTRONIC BUSINESS SERVICE</p>
+                    <p style="color: #888; text-align: center;">ENTERPRISE BUSINESS SERVICE</p>
                 </div>
             </div>
         `
