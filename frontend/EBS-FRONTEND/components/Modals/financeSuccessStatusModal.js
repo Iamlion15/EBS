@@ -37,7 +37,7 @@ const StatusModal = ({ modalIsOpen, toggleModal }) => {
         <ModalBody>
           <div className="d-flex flex-column align-items-center">
             <i className={`bi bi-check-circle-fill success-icon ${animationCompleted ? 'animate' : ''}`} onAnimationEnd={onAnimationEnd}></i>
-            <p className="font-monospace status-message">Successfully Payed vendor</p>
+            <p className="font-monospace status-message">Successfully paid vendor</p>
           </div>
         </ModalBody>
         <ModalFooter>

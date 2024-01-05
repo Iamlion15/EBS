@@ -74,6 +74,15 @@ exports.updateItem = async (req, res) => {
 
 exports.getItems = async (req, res) => {
     try {
+        const items = await itemRequestModel.find({owner:req.user._id}).populate("item").populate("owner");
+        res.status(200).json(items)
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
+exports.getEBSItems = async (req, res) => {
+    try {
         const items = await itemRequestModel.find().populate("item").populate("owner");
         res.status(200).json(items)
     } catch (err) {

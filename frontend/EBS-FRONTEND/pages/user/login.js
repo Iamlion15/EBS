@@ -48,12 +48,15 @@ const UserLogin = () => {
         } catch (error) {
             try {
                 if (error.response.status === 404) {
+                    toast.update(toastId.current, { render: "USER NOT FOUND", type: toast.TYPE.ERROR, autoClose: 2000 })
                     setErrorMsg("User not found")
                 }
                 else if (error.response.status === 403) {
+                    toast.update(toastId.current, { render: "EMAIL OR PASSWORD INVALID", type: toast.TYPE.ERROR, autoClose: 2000 })
                     setErrorMsg("Email or Password is Invalid")
                 }
                 else {
+                    toast.update(toastId.current, { render: "Application failed!contact admin", type: toast.TYPE.ERROR, autoClose: 2000 })
                     setErrorMsg("Failure")
                 }
             } catch (error) {
